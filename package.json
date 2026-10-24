@@ -1,0 +1,35 @@
+{
+  "name": "lareesha-amplify",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/storefront",
+    "apps/admin"
+  ],
+  "scripts": {
+    "sandbox": "npx ampx sandbox",
+    "sandbox:once": "ampx sandbox --once",
+    "sync-outputs": "node scripts/sync-amplify-outputs.mjs",
+    "ssm:secrets": "node scripts/set-ssm-secrets.mjs",
+    "ssm:secrets:dry-run": "node scripts/set-ssm-secrets.mjs --dry-run",
+    "r2:cors": "node scripts/set-ssm-secrets.mjs --cors-only",
+    "storefront": "npm run start --workspace apps/storefront",
+    "admin": "npm run start --workspace apps/admin",
+    "build:storefront": "npm run build --workspace apps/storefront",
+    "build:admin": "npm run build --workspace apps/admin"
+  },
+  "devDependencies": {
+    "@aws-amplify/backend": "^1.16.1",
+    "@aws-amplify/backend-cli": "^1.8.0",
+    "@types/node": "^22.15.3",
+    "aws-cdk-lib": "^2.204.0",
+    "constructs": "^10.4.2",
+    "esbuild": "^0.25.4",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@angular/forms": "^20.3.18"
+  }
+}

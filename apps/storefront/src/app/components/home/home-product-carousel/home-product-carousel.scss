@@ -1,0 +1,234 @@
+@use '../home-section';
+
+.home-product-carousel__header {
+  align-items: stretch;
+  margin-bottom: 22px;
+}
+
+.home-product-carousel__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  gap: 16px;
+}
+
+.home-product-carousel__title-row .home-section__title {
+  flex: 1 1 auto;
+  width: auto;
+  margin: 0;
+  text-align: left;
+  color: var(--ll-logo);
+
+  &::after {
+    display: none;
+  }
+}
+
+.home-product-carousel__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.home-product-carousel__view-all {
+  margin-right: 6px;
+  font-family: var(--ll-font-body);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  text-decoration: none;
+  color: var(--ll-gold);
+  transition: color 0.2s var(--ll-ease);
+
+  &:hover {
+    color: var(--ll-gold-hover);
+  }
+}
+
+.home-product-carousel__carousel {
+  position: relative;
+  width: 100%;
+}
+
+.home-product-carousel__viewport {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+
+  &--partial {
+    overflow: visible;
+  }
+}
+
+// Smooth page slide — ease-out curve for a polished feel
+$carousel-ease: cubic-bezier(0.22, 1, 0.36, 1);
+$carousel-duration: 0.6s;
+
+.home-product-carousel__track {
+  display: flex;
+  width: 100%;
+  transform: translate3d(0, 0, 0);
+  transition: transform $carousel-duration $carousel-ease;
+  will-change: transform;
+  backface-visibility: hidden;
+
+  &--instant {
+    transition: none;
+  }
+
+  &--partial {
+    justify-content: center;
+    width: 100%;
+    transform: none !important;
+    transition: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    transition: none;
+  }
+}
+
+// Fixed slot width — same in carousel scroll and centered partial rows
+.home-product-carousel__slide {
+  display: flex;
+  flex: 0 0 var(--slide-width);
+  width: var(--slide-width);
+  max-width: var(--slide-width);
+  min-width: var(--slide-width);
+  padding: 0 6px;
+  box-sizing: border-box;
+  align-items: stretch;
+
+  app-product-card {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+.home-product-carousel__nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--ll-border-strong);
+  border-radius: 50%;
+  background: var(--ll-surface);
+  color: var(--ll-gold);
+  cursor: pointer;
+  transition:
+    background-color 0.2s var(--ll-ease),
+    border-color 0.2s var(--ll-ease),
+    opacity 0.2s var(--ll-ease);
+
+  .material-symbols-outlined {
+    font-size: 22px;
+  }
+
+  &:hover:not(:disabled) {
+    background: var(--ll-gold-soft);
+    border-color: var(--ll-gold);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}
+
+.home-product-carousel__status {
+  margin: 0;
+  padding: 24px 0;
+  text-align: center;
+  font-size: var(--ll-text-sm);
+  color: var(--ll-muted);
+}
+
+.home-product-carousel__dots {
+  display: none;
+}
+
+@media (max-width: 599px) {
+  .home-product-carousel__header {
+    margin-bottom: 16px;
+  }
+
+  .home-product-carousel__title-row .home-section__title {
+    font-size: clamp(1.25rem, 3vw + 0.7rem, 1.5rem);
+    line-height: 1.2;
+  }
+
+  .home-product-carousel__view-all {
+    font-size: 13px;
+  }
+
+  .home-product-carousel__slide {
+    padding: 0 4px;
+  }
+
+  .home-product-carousel__viewport--scroll {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    &.home-product-carousel__viewport--partial {
+      overflow-x: visible;
+      scroll-snap-type: none;
+    }
+  }
+
+  .home-product-carousel__track--scroll {
+    width: max-content;
+    min-width: 100%;
+    transform: none !important;
+    transition: none;
+    will-change: auto;
+  }
+
+  // Snap at each two-product page (first slide of each pair)
+  .home-product-carousel__viewport--scroll .home-product-carousel__slide:nth-child(odd) {
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  .home-product-carousel__dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 16px;
+    padding: 0;
+  }
+
+  .home-product-carousel__dot {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: 1px solid var(--ll-text);
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    transition:
+      background-color 0.2s var(--ll-ease),
+      border-color 0.2s var(--ll-ease),
+      transform 0.2s var(--ll-ease);
+
+    &--active {
+      background: var(--ll-text);
+      border-color: var(--ll-text);
+    }
+  }
+}

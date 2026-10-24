@@ -1,0 +1,54 @@
+<div class="help-support-container">
+  <div class="header">
+    <h1>Help & Support</h1>
+  </div>
+
+  <div class="content">
+    <div class="contact-section">
+      <h2>Get in Touch</h2>
+      <div class="contact-cards">
+        <div class="contact-card">
+          <mat-icon>phone</mat-icon>
+          <h3>Phone Support</h3>
+          <p>+91 7736335483</p>
+          <span class="response-time">Mon-Sat, 9 AM 6 PM IST</span>
+        </div>
+
+        <div class="contact-card">
+          <mat-icon>mail</mat-icon>
+          <h3>Email Support</h3>
+          <p>kichupoulose@gmail.com</p>
+          <span class="response-time">Response time: 24 hours</span>
+        </div>
+
+        <div class="contact-card">
+          <mat-icon>photo_camera</mat-icon>
+          <h3>Instagram</h3>
+          <a
+            href="https://www.instagram.com/lareeshaluxe_jewels?igsh=ZjBwcWYwaDlsMWZ0"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            lareeshaluxe_jewels
+          </a>
+          <span class="response-time">DM us for quick updates</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="faq-section">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-list">
+        <div class="faq-item" *ngFor="let faq of faqs; let i = index" [class.open]="faq.isOpen">
+          <button class="faq-question" (click)="toggleFAQ(i)">
+            <span>{{ faq.question }}</span>
+            <mat-icon>{{ faq.isOpen ? 'expand_less' : 'expand_more' }}</mat-icon>
+          </button>
+          <div class="faq-answer" *ngIf="faq.isOpen">
+            <p>{{ faq.answer }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

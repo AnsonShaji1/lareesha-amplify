@@ -1,0 +1,112 @@
+:host {
+  display: block;
+}
+
+.account-page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 28px 80px;
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  grid-template-areas:
+    'header header'
+    'nav content';
+  column-gap: 56px;
+  row-gap: 28px;
+  color: var(--ll-text);
+  font-family: var(--ll-font-body);
+
+  &--orders {
+    display: block;
+    max-width: none;
+    padding: 0;
+  }
+}
+
+.page-header {
+  grid-area: header;
+
+  h1 {
+    margin: 0;
+    font-size: var(--ll-text-xl);
+    color: var(--ll-text);
+  }
+
+  .page-description {
+    margin: 10px 0 0;
+    font-family: var(--ll-font-body);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--ll-muted);
+  }
+}
+
+.account-nav {
+  grid-area: nav;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+
+  a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+    padding: 0 12px;
+    border-radius: 999px;
+    color: var(--ll-muted);
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+
+    &:hover {
+      color: var(--ll-text);
+    }
+
+    &.active {
+      background: var(--ll-gold-soft);
+      color: var(--ll-text);
+    }
+  }
+}
+
+.account-content {
+  grid-area: content;
+  min-width: 0;
+}
+
+@media (max-width: 800px) {
+  .account-page {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'header'
+      'nav'
+      'content';
+    row-gap: 20px;
+    padding: 28px 16px 64px;
+  }
+
+  .page-header h1 {
+    font-size: var(--ll-text-xl);
+  }
+
+  .account-nav {
+    flex-direction: row;
+    gap: 8px;
+    overflow-x: auto;
+    position: sticky;
+    top: var(--app-header-height);
+    z-index: 3;
+    margin: 0 -16px;
+    padding: 8px 16px;
+    background: var(--ll-bg);
+  }
+}
+
+@media (max-width: 480px) {
+  .account-page:not(.account-page--orders) {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}

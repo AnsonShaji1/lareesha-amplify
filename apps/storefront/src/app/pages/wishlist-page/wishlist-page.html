@@ -1,0 +1,60 @@
+<div class="wishlist-page">
+  <div class="page-header">
+    <h1>Wishlist</h1>
+    <p class="page-description">{{ summary }}</p>
+  </div>
+
+  @if (items.length === 0) {
+    <div class="wishlist-empty">
+      <h2>Your wishlist is empty</h2>
+      <p>Save pieces you want to come back to.</p>
+      <a class="ll-cta ll-cta--primary" routerLink="/categories">Continue shopping</a>
+    </div>
+  } @else {
+    <div class="wishlist-grid">
+      @for (product of items; track product.id) {
+        <article class="wishlist-tile">
+          <button type="button" class="wishlist-tile__media" (click)="openProduct(product)">
+            <img [src]="product.images[0] || placeholderSrc" [alt]="product.name" />
+            @if (product.availableStock === 0) {
+              <span class="wishlist-tile__badge">Out of stock</span>
+            }
+          </button>
+          <button
+            type="button"
+            class="wishlist-tile__remove"
+            (click)="remove(product)"
+            aria-label="Remove from wishlist"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+
+          <div class="wishlist-tile__info">
+            @if (product.productCode) {
+              <p class="wishlist-tile__code">{{ product.productCode }}</p>
+            }
+            <h2>
+              <button type="button" (click)="openProduct(product)">{{ product.name }}</button>
+            </h2>
+            <p class="wishlist-tile__price">
+              @if (product.salePrice && +product.salePrice < +product.originalPrice) {
+                <span class="wishlist-tile__sale">₹{{ product.salePrice }}</span>
+                <span class="wishlist-tile__was">₹{{ product.originalPrice }}</span>
+              } @else {
+                <span class="wishlist-tile__sale">₹{{ product.salePrice || product.originalPrice }}</span>
+              }
+            </p>
+            <button
+              type="button"
+              class="ll-cta ll-cta--primary wishlist-tile__cart"
+              (click)="addToCart(product)"
+              [disabled]="product.availableStock === 0"
+            >
+              {{ product.availableStock === 0 ? 'Out of stock' : 'Add to cart' }}
+            </button>
+          </div>
+        </article>
+      }
+    </div>
+  }
+</div>

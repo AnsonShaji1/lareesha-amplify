@@ -1,0 +1,578 @@
+.checkout-page {
+  background: var(--ll-bg);
+  min-height: 100%;
+  font-family: var(--ll-font-body);
+  color: var(--ll-text);
+}
+
+// Razorpay Payment Timer Banner - REMOVED
+// Timer now integrated directly in Razorpay modal via timeout configuration
+
+.checkout-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 36px 28px 80px;
+
+  &.success-view {
+    display: grid;
+    place-items: center;
+    min-height: 60vh;
+  }
+}
+
+.page-header {
+  margin-bottom: 36px;
+
+  h1 {
+    margin: 0;
+    font-size: var(--ll-text-xl);
+    color: var(--ll-text);
+  }
+
+  .page-description {
+    margin: 10px 0 0;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: var(--ll-muted);
+  }
+}
+
+.checkout-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 56px;
+  align-items: start;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+button.section-add.ll-cta {
+  width: auto;
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 0 22px;
+  background: var(--ll-gold);
+  color: var(--ll-on-gold);
+  border: 1px solid var(--ll-gold);
+
+  &:hover {
+    background: var(--ll-gold-hover);
+    border-color: var(--ll-gold-hover);
+    color: var(--ll-on-gold);
+  }
+}
+
+.checkout-summary {
+  position: sticky;
+  top: calc(var(--app-header-height) + 24px);
+}
+
+.checkout-pay {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.checkout-main {
+  h1 {
+    margin: 0 0 32px;
+    font-size: var(--ll-text-xl);
+    font-weight: var(--ll-display-weight);
+    letter-spacing: var(--ll-display-letter-spacing);
+    color: var(--ll-text);
+  }
+}
+
+.form-section {
+  margin-bottom: 40px;
+
+  h2 {
+    margin: 0;
+    font-family: var(--ll-font-body);
+    font-size: var(--ll-text-xs);
+    font-weight: 500;
+    letter-spacing: var(--ll-label-tracking);
+    text-transform: uppercase;
+    color: var(--ll-muted);
+  }
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+
+  &.full-width {
+    flex: 1 1 100%;
+  }
+
+  &.half-width {
+    flex: 1 1 calc(50% - 8px);
+  }
+
+  label {
+    font-size: var(--ll-text-xs);
+    font-weight: 500;
+    letter-spacing: var(--ll-label-tracking);
+    margin-bottom: 8px;
+    color: var(--ll-muted);
+  }
+
+  input,
+  select {
+    padding: 12px 16px;
+    border: 1px solid var(--ll-border-strong);
+    color: var(--ll-text);
+    border-radius: var(--ll-radius-sm);
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.3s;
+    background: var(--ll-surface);
+
+    &:focus {
+      outline: none;
+      border-color: var(--ll-gold);
+    }
+
+    &[readonly] {
+      background: var(--ll-surface-2);
+      color: var(--ll-muted);
+      cursor: not-allowed;
+    }
+  }
+
+  select {
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
+  }
+}
+
+.payment-note {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  background: var(--ll-surface);
+  border: 1px solid var(--ll-border);
+
+  mat-icon {
+    color: var(--ll-muted);
+  }
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--ll-muted);
+  }
+}
+
+/* Primary checkout CTA — use global `ll-cta` (Material filled buttons use M3 pill + theme, not on-brand) */
+.btn-place-order.ll-cta {
+  width: 100%;
+  min-height: 48px;
+  margin-top: 8px;
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    pointer-events: none;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .btn-place-order--desktop {
+    display: none !important;
+  }
+
+  .btn-place-order--mobile {
+    display: flex;
+    margin-top: 18px;
+  }
+
+  .btn-place-order.ll-cta {
+    margin-top: 0;
+  }
+}
+
+@media (min-width: 769px) {
+  .btn-place-order--mobile {
+    display: none;
+  }
+}
+
+.checkout-sidebar {
+  h2 {
+    margin: 0 0 20px;
+    font-family: var(--ll-font-body);
+    font-size: var(--ll-text-xs);
+    font-weight: 500;
+    letter-spacing: var(--ll-label-tracking);
+    text-transform: uppercase;
+    color: var(--ll-muted);
+  }
+}
+
+.summary-items {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.summary-item {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: start;
+
+  img {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+    border-radius: var(--ll-radius-sm);
+    background: var(--ll-banner);
+  }
+
+  .item-details {
+    .item-name {
+      font-family: var(--ll-font-body);
+      font-size: var(--ll-text-md);
+      font-weight: var(--ll-weight-medium);
+      line-height: 1.4;
+      color: var(--ll-text);
+      margin: 0 0 4px 0;
+    }
+
+    .item-meta {
+      font-size: var(--ll-text-xs);
+      color: var(--ll-muted);
+      margin: 0;
+    }
+  }
+
+  .item-price {
+    font-size: var(--ll-text-price);
+    font-weight: 500;
+    color: var(--ll-text);
+    margin: 0;
+  }
+}
+
+.summary-totals {
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 14px;
+
+    &.grand-total {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--ll-text);
+      padding-top: 8px;
+      margin-top: 4px;
+      margin-bottom: 0;
+    }
+  }
+
+  .total-row-note {
+    margin-top: -6px;
+
+    .note {
+      font-size: 12px;
+      line-height: 1.5;
+      color: var(--ll-muted);
+      flex: 1 1 auto;
+    }
+  }
+}
+
+.success-screen {
+  text-align: center;
+  max-width: 500px;
+
+  .success-icon {
+    mat-icon {
+      font-size: 64px;
+      width: 64px;
+      height: 64px;
+      color: var(--ll-gold);
+    }
+  }
+
+  h1 {
+    font-size: var(--ll-text-page);
+    font-weight: var(--ll-display-weight);
+    margin: 20px 0;
+  }
+
+  .order-number {
+    font-size: 16px;
+    color: var(--ll-muted);
+    margin: 10px 0;
+  }
+
+  .confirmation-text {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--ll-muted);
+    margin: 20px 0;
+  }
+}
+
+// Address Selection Styles
+.address-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+
+  h2 {
+    margin: 0;
+  }
+
+  .btn-add-address {
+    min-width: auto !important;
+    width: 40px;
+    height: 40px;
+    background: var(--ll-surface-2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ll-text);
+    border: 1px solid var(--ll-border-strong);
+    transition: border-color 0.2s var(--ll-ease), color 0.2s var(--ll-ease);
+
+    &:hover {
+      border-color: var(--ll-gold);
+      color: var(--ll-gold);
+    }
+
+    mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
+
+.saved-addresses {
+  .address-list {
+    display: grid;
+    gap: 12px;
+  }
+
+  .address-card {
+    display: flex;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid var(--ll-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: var(--ll-border-strong);
+    }
+
+    &.selected {
+      border-color: var(--ll-gold-border);
+      background: var(--ll-gold-soft);
+    }
+
+    .address-radio {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+    }
+
+    .address-content {
+      flex: 1;
+      min-width: 0;
+
+      .address-name {
+        font-weight: 500;
+        font-size: 14px;
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+
+        .address-type {
+          font-size: 12px;
+          color: var(--ll-muted);
+          font-weight: 400;
+        }
+
+        .default-badge {
+          display: inline-block;
+          background: var(--ll-gold-soft);
+          color: var(--ll-gold);
+          padding: 2px 8px;
+          border-radius: 999px;
+          font-size: var(--ll-text-xs);
+          font-weight: 500;
+        }
+      }
+
+      .address-text {
+        font-size: 13px;
+        color: var(--ll-muted);
+        line-height: 1.5;
+        margin-bottom: 4px;
+      }
+
+      .address-phone {
+        font-size: 13px;
+        color: var(--ll-muted);
+      }
+    }
+
+    .address-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .btn-edit-address,
+    .btn-delete-address {
+      flex-shrink: 0;
+      min-width: auto !important;
+      width: 36px;
+      height: 36px;
+      background: transparent;
+      border: none;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ll-muted);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      padding: 0;
+
+      &:hover {
+        background: var(--ll-gold-soft);
+        color: var(--ll-text);
+      }
+
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+    }
+
+    .btn-delete-address {
+      &:hover {
+        background: var(--ll-gold-soft);
+        color: var(--ll-gold);
+      }
+    }
+  }
+
+  .btn-use-new {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--ll-border);
+    background: var(--ll-surface);
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ll-text);
+    cursor: pointer;
+    transition: border-color 0.2s var(--ll-ease);
+
+    &:hover {
+      border-color: var(--ll-gold);
+      background: var(--ll-surface);
+    }
+  }
+}
+
+.no-addresses-message {
+  text-align: left;
+  padding: 8px 0 0;
+
+  .empty-icon {
+    font-size: 40px;
+    width: 40px;
+    height: 40px;
+    color: var(--ll-muted);
+    margin: 0 auto 16px;
+    display: block;
+  }
+
+  p {
+    font-size: 14px;
+    color: var(--ll-muted);
+    margin: 0 0 16px 0;
+    font-weight: 500;
+  }
+
+  .ll-cta {
+    width: auto;
+  }
+}
+
+:host ::ng-deep {
+  .address-list {
+    .mat-mdc-radio-button {
+      --mdc-radio-selected-icon-color: var(--ll-gold);
+      --mdc-radio-selected-hover-icon-color: var(--ll-gold-hover);
+      --mdc-radio-selected-pressed-icon-color: var(--ll-gold);
+      --mdc-radio-unselected-icon-color: #888;
+      --mdc-radio-unselected-hover-icon-color: var(--ll-muted);
+      --mat-radio-label-text-font: var(--ll-font-body);
+    }
+  }
+
+  .btn-add-address.mat-mdc-icon-button .mat-mdc-button-persistent-ripple::before,
+  .btn-edit-address.mat-mdc-icon-button .mat-mdc-button-persistent-ripple::before,
+  .btn-delete-address.mat-mdc-icon-button .mat-mdc-button-persistent-ripple::before {
+    opacity: 0 !important;
+  }
+}
+
+.new-address-form {
+  min-height: 200px;
+}
+
+@media (max-width: 900px) {
+  .checkout-content {
+    padding: 28px 16px 64px;
+  }
+
+  .page-header h1 {
+    font-size: var(--ll-text-xl);
+  }
+
+  .checkout-layout {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .checkout-summary {
+    position: static;
+  }
+}

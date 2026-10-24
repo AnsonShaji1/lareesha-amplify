@@ -1,0 +1,35 @@
+<div class="collections-page">
+  <div class="collections-page__inner">
+    <header class="collections-page__header">
+      <h1>All Categories</h1>
+      <p>Shop by category</p>
+    </header>
+
+    @if (isLoading) {
+      <p class="collections-page__status" aria-live="polite">Loading categories…</p>
+    } @else if (categories.length) {
+      <ul class="collections-grid">
+        @for (category of categories; track category.id) {
+          <li>
+            <a
+              class="collection-card"
+              [routerLink]="['/category', category.slug]"
+              [attr.aria-label]="'Shop ' + category.name"
+            >
+              <span class="collection-card__media">
+                <img
+                  [src]="category.imageUrl || placeholderSrc"
+                  [alt]="category.name"
+                  loading="lazy"
+                />
+              </span>
+              <span class="collection-card__name">{{ toTitleCase(category.name) }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="collections-page__status">No categories available.</p>
+    }
+  </div>
+</div>

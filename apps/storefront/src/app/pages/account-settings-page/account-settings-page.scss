@@ -1,0 +1,198 @@
+.account-settings-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  min-height: calc(100vh - 80px);
+}
+.settings-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+  h1 {
+    font-family: var(--ll-font-display);
+    font-size: var(--ll-text-page);
+    font-weight: var(--ll-display-weight);
+    line-height: var(--ll-display-line-height);
+    letter-spacing: var(--ll-display-letter-spacing);
+    margin: 0;
+  }
+}
+.settings-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+.settings-card {
+  background: var(--ll-surface);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    h2 {
+      font-family: var(--ll-font-display);
+      font-size: var(--ll-text-product);
+      font-weight: var(--ll-product-name-weight);
+      line-height: 1.25;
+      margin: 0;
+    }
+    .edit-button {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: none;
+      color: var(--ll-gold);
+      border: 1px solid var(--ll-gold);
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.25;
+      mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+      }
+      &:hover {
+        background-color: var(--ll-gold);
+        color: white;
+      }
+    }
+  }
+}
+.settings-form {
+  .form-group {
+    margin-bottom: 1.5rem;
+    label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 1rem;
+      transition: border-color 0.2s;
+      &:focus {
+        outline: none;
+        border-color: var(--ll-gold);
+      }
+      &:disabled {
+        background-color: var(--ll-surface-2);
+        cursor: not-allowed;
+      }
+    }
+    .help-text {
+      display: block;
+      margin-top: 0.25rem;
+      font-size: 0.8rem;
+      color: var(--ll-muted);
+    }
+  }
+  .form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    button {
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.25;
+      border: none;
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+    }
+    .cancel-button {
+      background: var(--ll-surface);
+      border: 1px solid var(--ll-border-strong);
+      color: var(--ll-text);
+      &:hover:not(:disabled) {
+        background-color: var(--ll-surface-2);
+      }
+    }
+    .save-button {
+      background-color: var(--ll-gold);
+      color: white;
+      &:hover:not(:disabled) {
+        background-color: var(--ll-gold-hover);
+      }
+    }
+  }
+}
+.info-display {
+  info-item {
+    padding: 1rem 0;
+    border-bottom: 1px solid #eee;
+    &:last-child {
+      border-bottom: none;
+    }
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: var(--ll-muted);
+      margin-bottom: 0.25rem;
+    }
+    p {
+      margin: 0;
+      font-size: 1rem;
+      color: var(--ll-text);
+    }
+  }
+}
+.action-list {
+  .action-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    padding: 1rem;
+    background: none;
+    border: none;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+    transition: background-color 0.25;
+    text-align: left;
+    &:last-child {
+      border-bottom: none;
+    }
+    &:hover {
+      background-color: var(--ll-surface);
+    }
+    mat-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+      color: var(--ll-muted);
+      &.arrow {
+        margin-left: auto;
+      }
+    }
+    span {
+      flex: 1;
+      font-size: 1rem;
+    }
+  }
+}
+@media (max-width: 768px) {
+  .account-settings-container {
+    padding: 1rem;
+  }
+  .settings-card {
+    padding: 1rem;
+  }
+  .form-actions {
+    flex-direction: column;
+    button {
+      width: 100%;
+    }
+  }
+}

@@ -1,0 +1,27 @@
+<div class="product-card">
+  <div class="product-image-container">
+    <img [src]="product.images[0] || placeholderSrc" [alt]="product.name" class="product-image" />
+
+    @if (product.availableStock === 0) {
+      <div class="out-of-stock-badge">Out of stock</div>
+    }
+  </div>
+
+  <div class="product-info">
+    @if (product.productCode) {
+      <p class="product-code">{{ product.productCode }}</p>
+    }
+    <h3 class="product-name">{{ product.name }}</h3>
+
+    <div class="product-price">
+      @if (product.salePrice && +product.salePrice < +product.originalPrice) {
+        <!-- <span class="price-label">ORIGINAL PRICE</span> -->
+
+        <span class="sale-price">₹{{ product.salePrice }}</span>
+        <span class="original-price">₹{{ product.originalPrice }}</span>
+      } @else {
+        <span class="price">₹{{ product.salePrice }}</span>
+      }
+    </div>
+  </div>
+</div>

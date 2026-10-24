@@ -1,0 +1,454 @@
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+$ll-gold-palette: (
+  50: #f6f1ea,
+  100: #b89568,
+  200: #a68456,
+  300: #8c6e45,
+  400: #8c6e45,
+  500: #a68456,
+  600: #b89568,
+  700: #2c261f,
+  800: #7c736a,
+  900: #2c261f,
+  A100: #f3ece3,
+  A200: #a68456,
+  A400: #8c6e45,
+  A700: #b89568,
+  contrast: (
+    50: #2c261f,
+    100: #fffcf7,
+    200: #fffcf7,
+    300: #fffcf7,
+    400: #fffcf7,
+    500: #fffcf7,
+    600: #fffcf7,
+    700: #fffcf7,
+    800: #fffcf7,
+    900: #fffcf7,
+    A100: #2c261f,
+    A200: #fffcf7,
+    A400: #fffcf7,
+    A700: #fffcf7,
+  ),
+);
+
+$my-primary: mat.m2-define-palette($ll-gold-palette, 200, 100, 400);
+$my-accent: mat.m2-define-palette($ll-gold-palette, A200, A100, A400);
+$my-warn: mat.m2-define-palette(mat.$m2-red-palette);
+
+$my-theme: mat.m2-define-light-theme((
+  color: (
+    primary: $my-primary,
+    accent: $my-accent,
+    warn: $my-warn,
+  ),
+  typography: mat.m2-define-typography-config(
+    $font-family: 'Roboto, Helvetica Neue, sans-serif',
+  ),
+  density: 0,
+));
+
+@include mat.all-component-themes($my-theme);
+
+:root {
+  --ll-font-body: 'Roboto', 'Helvetica Neue', sans-serif;
+  --ll-font-display: 'Times New Roman', Times, serif;
+
+  /* Font weights — must match index.html Google Fonts weights */
+  --ll-weight-light: 300;
+  --ll-weight-regular: 400;
+  --ll-weight-medium: 500;
+
+  --ll-display-weight: 500;
+  --ll-product-name-weight: 500;
+  --ll-display-line-height: 1.08;
+  --ll-display-letter-spacing: 0.01em;
+  --ll-nav-tracking: 0.04em;
+  --ll-button-tracking: 0.08em;
+  --ll-label-tracking: 0.08em;
+
+  --ll-bg: #f6f1ea;
+  --ll-surface: #fffcf7;
+  --ll-surface-2: #f3ece3;
+  --ll-banner: #efe6da;
+  --ll-text: #0b0b0b;
+  --ll-muted: #7c736a;
+  --ll-border: rgba(44, 38, 31, 0.1);
+  --ll-border-strong: rgba(44, 38, 31, 0.18);
+  --ll-on-gold: #fffcf7;
+
+  --ll-radius-sharp: 2px;
+  --ll-radius-sm: 8px;
+  --ll-radius-md: 12px;
+  --ll-radius-lg: 16px;
+
+  --ll-shadow-sm: 0 1px 2px rgba(44, 38, 31, 0.06);
+  --ll-shadow-md: 0 12px 32px rgba(44, 38, 31, 0.08);
+
+  --ll-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+
+  --ll-gold: #a68456;
+  --ll-gold-hover: #b89568;
+  --ll-gold-pressed: #8c6e45;
+  --ll-gold-soft: rgba(166, 132, 86, 0.12);
+  --ll-gold-border: rgba(166, 132, 86, 0.45);
+  /* Header wordmark — match lareesha-front-end --ll-gold (buttons keep champagne --ll-gold) */
+  --ll-logo: #6b4a1a;
+  --ll-logo-hover: #543810;
+  --ll-weight-bold: 700;
+
+  --ll-status-success-bg: #e5f0e8;
+  --ll-status-success-text: #1b5c36;
+  --ll-status-success-border: rgba(27, 92, 54, 0.28);
+
+  /* Fixed site header: toolbar row + optional safe-area (notched phones) */
+  --app-header-height: calc(76px + env(safe-area-inset-top, 0px));
+
+  /* Type scale (UI uses body sans; display serif where explicitly applied) */
+  --ll-text-xs: 12px;
+  --ll-text-sm: 14px;
+  --ll-text-price: 15px;
+  --ll-text-md: 16px;
+  --ll-text-lg: 18px;
+  --ll-text-product: 22px;
+  --ll-text-section: 2rem;
+  --ll-text-page: 2.5rem;
+  --ll-text-xl: var(--ll-text-page);
+  --ll-text-2xl: clamp(3.5rem, 2.2rem + 2vw, 4.5rem);
+}
+
+@media (max-width: 600px) {
+  :root {
+    --ll-text-page: 2rem;
+    --ll-text-xl: var(--ll-text-page);
+    --ll-text-product: 20px;
+    --ll-text-2xl: 2.5rem;
+    --ll-display-line-height: 1.15;
+    --ll-display-letter-spacing: 0.02em;
+  }
+}
+
+/* Address editor dialog — the component draws its own card, so the Material pane stays clear */
+.ll-address-dialog .mat-mdc-dialog-container,
+.ll-address-dialog .mat-mdc-dialog-surface {
+  background: transparent;
+  box-shadow: none;
+  padding: 0;
+}
+
+.ll-address-dialog-backdrop {
+  background: rgba(0, 0, 0, 0.72);
+}
+
+.address-select-panel.mat-mdc-select-panel {
+  background: var(--ll-surface-2);
+  border: 1px solid var(--ll-border-strong);
+  border-radius: var(--ll-radius-sm);
+  padding: 6px 0;
+}
+
+.address-select-panel .mat-mdc-option {
+  color: var(--ll-text);
+  font-family: var(--ll-font-body);
+  font-size: 14px;
+  min-height: 40px;
+}
+
+.address-select-panel .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) {
+  background: var(--ll-gold-soft);
+}
+
+.address-select-panel .mat-mdc-option:hover:not(.mdc-list-item--disabled) {
+  background: rgba(228, 210, 176, 0.08);
+}
+
+.address-select-panel .mat-mdc-option.mdc-list-item--disabled {
+  color: var(--ll-muted);
+}
+
+/* Address editor bottom sheet (`AddressEditorOpenerService`) — panelClass on container */
+.mat-bottom-sheet-container.ll-address-bottom-sheet-panel {
+  padding: 0;
+  min-width: 100%;
+  max-width: 100vw;
+  max-height: min(92dvh, 880px);
+  border-radius: 16px 16px 0 0;
+  background: var(--ll-surface);
+  color: var(--ll-text);
+  box-sizing: border-box;
+  /* Single scroll surface — avoid stacking with inner `.address-form` overflow */
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+// Primary CTAs — gold / black brand system
+a.ll-cta,
+button.ll-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 28px;
+  font-family: var(--ll-font-body);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: var(--ll-button-tracking);
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: var(--ll-radius-sharp);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition:
+    background-color 0.25s var(--ll-ease),
+    color 0.25s var(--ll-ease),
+    border-color 0.25s var(--ll-ease),
+    box-shadow 0.25s var(--ll-ease),
+    transform 0.2s var(--ll-ease);
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+button.ll-cta {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ll-cta--primary {
+  background: var(--ll-gold);
+  color: var(--ll-on-gold);
+  border-color: var(--ll-gold);
+
+  &:hover {
+    background: var(--ll-gold-hover);
+    border-color: var(--ll-gold-hover);
+    box-shadow: 0 8px 28px rgba(228, 210, 176, 0.18);
+  }
+}
+
+a.ll-cta.ll-cta--ghost,
+button.ll-cta.ll-cta--ghost {
+  background: rgba(12, 12, 12, 0.55);
+  color: #fff;
+  border-color: rgba(246, 241, 232, 0.7);
+
+  &:hover {
+    background: rgba(12, 12, 12, 0.75);
+    border-color: #fff;
+  }
+}
+
+.ll-cta--outline-dark {
+  background: transparent;
+  color: var(--ll-gold);
+  border-color: var(--ll-gold-border);
+
+  &:hover {
+    background: var(--ll-gold-soft);
+    border-color: var(--ll-gold);
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  color-scheme: light;
+}
+
+body {
+  font-family: var(--ll-font-body);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  background: var(--ll-bg);
+  color: var(--ll-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Keep form/UI controls in readable sans-serif
+button,
+input,
+select,
+textarea {
+  font-family: var(--ll-font-body);
+}
+
+// Display serif for page titles (not toolbar logo / PDP — those have dedicated rules below)
+h1:not(.hero__title):not(.product-title):not(.logo-full):not(.logo-text),
+.ll-display-heading,
+.category-header h1,
+.page-header h1,
+.home-section__title,
+.drawer-header h2 {
+  font-family: var(--ll-font-display);
+  font-weight: var(--ll-display-weight);
+  font-style: normal;
+  line-height: var(--ll-display-line-height);
+  letter-spacing: var(--ll-display-letter-spacing);
+  font-synthesis: none;
+  text-rendering: geometricPrecision;
+}
+
+// Material form fields follow the shop type and gold focus
+.mat-mdc-form-field {
+  --mdc-outlined-text-field-focus-outline-color: var(--ll-gold);
+  --mdc-outlined-text-field-focus-label-text-color: var(--ll-gold);
+  --mdc-outlined-text-field-caret-color: var(--ll-gold);
+  --mdc-outlined-text-field-container-shape: var(--ll-radius-sm);
+  --mat-form-field-container-text-size: 16px;
+}
+
+.mat-mdc-unelevated-button.btn-primary {
+  --mdc-filled-button-container-shape: var(--ll-radius-sharp);
+  --mdc-filled-button-container-color: var(--ll-gold);
+  --mdc-filled-button-label-text-color: var(--ll-on-gold);
+  border-radius: var(--ll-radius-sharp);
+  letter-spacing: var(--ll-button-tracking);
+  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ll-on-gold);
+}
+
+// Material toolbar uses the body sans via `font` shorthand — reset on toolbar only, not children
+.mat-toolbar.header {
+  font-family: var(--ll-font-body);
+  font-size: 14px;
+  font-weight: var(--ll-weight-regular);
+  line-height: 1.43;
+}
+
+// Override Material toolbar color
+.mat-toolbar {
+  background: var(--ll-surface) !important;
+  color: var(--ll-text) !important;
+}
+
+// Minimal scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--ll-surface-2);
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cfc4b6;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b5a898;
+}
+  
+// Snackbars must sit above the fixed header (z-index 1100–1200). CDK default is 1000.
+.cdk-overlay-container {
+  z-index: 2500;
+}
+
+// Notification Snackbar Styles
+// Material 20 paints the surface with --mat-snack-bar-* tokens. The older
+// --mdc-snackbar-* tokens no longer change the background, which left white text on a white box.
+.mat-mdc-snack-bar-container {
+  &.snackbar-offset {
+    margin-top: calc(var(--app-header-height) + 8px);
+  }
+
+  &.snackbar-success .mat-mdc-snackbar-surface {
+    --mat-snack-bar-container-color: #106981;
+    --mat-snack-bar-supporting-text-color: #ffffff;
+    --mat-snack-bar-button-color: #ffffff;
+    background-color: #106981;
+    color: #ffffff;
+  }
+
+  &.snackbar-error .mat-mdc-snackbar-surface {
+    --mat-snack-bar-container-color: #ef4444;
+    --mat-snack-bar-supporting-text-color: #ffffff;
+    --mat-snack-bar-button-color: #ffffff;
+    background-color: #ef4444;
+    color: #ffffff;
+  }
+
+  &.snackbar-warning .mat-mdc-snackbar-surface {
+    --mat-snack-bar-container-color: #f59e0b;
+    --mat-snack-bar-supporting-text-color: #141210;
+    --mat-snack-bar-button-color: #141210;
+    background-color: #f59e0b;
+    color: #141210;
+  }
+
+  &.snackbar-info .mat-mdc-snackbar-surface {
+    --mat-snack-bar-container-color: #3b82f6;
+    --mat-snack-bar-supporting-text-color: #ffffff;
+    --mat-snack-bar-button-color: #ffffff;
+    background-color: #3b82f6;
+    color: #ffffff;
+  }
+
+  .mat-mdc-snack-bar-label,
+  .mdc-snackbar__label {
+    color: inherit;
+  }
+
+  .mat-mdc-button {
+    color: inherit !important;
+  }
+}
+
+
+// Global Error Message Styling
+.error-message {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  background:#fee2e2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  animation: slide Down 0.3s ease;
+  
+  mat-icon {
+    color: #dc2626;
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  } 
+  
+  p, span {
+    margin: 0;
+    color: #991b1b;
+    font-size: 13px;
+    line-height: 1.5;
+    white-space: pre-line;
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

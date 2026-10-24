@@ -1,0 +1,57 @@
+<div class="search-overlay" [class.active]="isOpen" (click)="close()">
+  <div
+    class="search-panel"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Search"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="search-header">
+      <h2>Search</h2>
+      <button type="button" class="close-btn" (click)="close()" aria-label="Close search">
+        <mat-icon aria-hidden="true">close</mat-icon>
+      </button>
+    </header>
+
+    <label class="search-field">
+      <mat-icon aria-hidden="true">search</mat-icon>
+      <input
+        type="text"
+        placeholder="Search by name or product code"
+        [ngModel]="searchQuery"
+        (ngModelChange)="onSearch($event)"
+        #searchInput
+        aria-label="Search by name or product code"
+      />
+    </label>
+
+    <div class="search-content">
+      @if (!searchQuery.trim()) {
+        <p class="search-hint">Type a product name or code.</p>
+      } @else if (isLoading) {
+        <p class="search-hint">Searching…</p>
+      } @else if (filteredProducts.length > 0) {
+        <div class="search-results">
+          @for (product of filteredProducts; track product.id) {
+            <button class="result-item" type="button" (click)="openProduct(product.id)">
+              <span class="result-image">
+                @if (product.images[0]) {
+                  <img [src]="product.images[0]" [alt]="product.name" />
+                }
+              </span>
+              <span class="result-info">
+                @if (product.productCode) {
+                  <span class="result-code">{{ product.productCode }}</span>
+                }
+                <span class="result-name">{{ product.name }}</span>
+                <span class="result-price">{{ formatRupees(product.salePrice || product.originalPrice) }}</span>
+              </span>
+            </button>
+          }
+        </div>
+      } @else if (hasSearched) {
+        <p class="search-hint">No products found for “{{ searchQuery.trim() }}”.</p>
+      }
+    </div>
+  </div>
+</div>

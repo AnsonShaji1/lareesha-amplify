@@ -1,0 +1,16 @@
+node_modules
+dist
+.angular
+.amplify
+amplify_outputs*
+amplifyconfiguration*
+.env
+.env.*
+scripts/ssm.local.env
+*.pyc
+__pycache__
+.idea
+.vscode
+.DS_Store
+
+sandbox.log

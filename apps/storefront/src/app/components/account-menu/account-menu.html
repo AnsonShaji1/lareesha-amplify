@@ -1,0 +1,32 @@
+<div class="account-dropdown" *ngIf="isOpen" (clickOutside)="close()">
+  <div class="account-links">
+    <div class="user-info">
+      <mat-icon>person</mat-icon>
+      <div class="user-details">
+        <span class="user-name">{{ userName }}</span>
+        <span class="user-email">{{ userEmail }}</span>
+      </div>
+    </div>
+    <a href="#" class="account-link" (click)="onMyOrders($event)">
+      <mat-icon>shopping_bag</mat-icon>
+      <span>My Orders</span>
+    </a>
+    <a href="#" class="account-link" (click)="onWishlist($event)">
+      <mat-icon>favorite_border</mat-icon>
+      <span>Wishlist</span>
+    </a>
+    <a href="#" class="account-link" (click)="onAccountSettings($event)">
+      <mat-icon>settings</mat-icon>
+      <span>Account Settings</span>
+    </a>
+    <a href="#" class="account-link" (click)="onHelpSupport($event)">
+      <mat-icon>help_outline</mat-icon>
+      <span>Help & Support</span>
+    </a>
+    <div class="divider"></div>
+    <a href="#" class="account-link" (click)="onSignOut($event)">
+      <mat-icon>logout</mat-icon>
+      <span>Sign Out</span>
+    </a>
+  </div>
+</div>

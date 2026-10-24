@@ -1,0 +1,208 @@
+<div class="filter-bar-wrapper" [class.filter-bar-wrapper--sort-only]="sortOnly">
+  <!-- Top Filter Bar -->
+  <div class="filter-bar" [class.filter-bar--sort-only]="sortOnly">
+    <div class="filter-bar-content">
+      <div class="filter-controls" [class.filter-controls--sort-only]="sortOnly">
+        @if (!sortOnly) {
+          <button
+            class="filter-btn"
+            (click)="openFilterDrawer()"
+            [class.has-active]="hasActiveFilters()"
+          >
+            <mat-icon>tune</mat-icon>
+            <span>Filter</span>
+          </button>
+        }
+
+        @if (!sortOnly && hasActiveFilters()) {
+          <div class="active-filters">
+            @for (category of appliedCategories; track category) {
+              <div class="filter-chip">
+                <span>{{ getCategoryLabel(category) }}</span>
+                <button class="chip-remove" type="button" (click)="removeCategory(category)" [attr.aria-label]="'Remove ' + getCategoryLabel(category)">
+                  ×
+                </button>
+              </div>
+            }
+
+            @if (sortInDrawer && selectedPriceSort) {
+              <div class="filter-chip">
+                <span>{{ getSortLabel() }}</span>
+                <button class="chip-remove" type="button" (click)="removeSortFilter()" [attr.aria-label]="'Remove ' + getSortLabel()">
+                  ×
+                </button>
+              </div>
+            }
+
+            @if (minPrice > MIN_PRICE || maxPrice < MAX_PRICE) {
+              <div class="filter-chip">
+                <span>{{ getPriceRangeLabel() }}</span>
+                <button class="chip-remove" type="button" (click)="removePriceFilter()" [attr.aria-label]="'Remove ' + getPriceRangeLabel()">
+                  ×
+                </button>
+              </div>
+            }
+
+            <button class="clear-all-btn" type="button" (click)="clearAllFilters()">Clear all</button>
+          </div>
+        }
+
+        @if (!sortInDrawer) {
+          <div class="sort-menu" [class.sort-menu--open]="sortMenuOpen">
+            <button
+              type="button"
+              class="sort-trigger"
+              (click)="toggleSortMenu()"
+              [attr.aria-expanded]="sortMenuOpen"
+              aria-haspopup="listbox"
+              aria-label="Sort by"
+            >
+              <span class="sort-trigger__kicker">Sort by</span>
+              <span class="sort-trigger__value">{{ getSortLabel() }}</span>
+              <mat-icon aria-hidden="true">expand_more</mat-icon>
+            </button>
+            @if (sortMenuOpen) {
+              <ul class="sort-list" role="listbox" aria-label="Sort by">
+                <li>
+                  <button type="button" role="option" [attr.aria-selected]="!selectedPriceSort" (click)="selectSort(null)">
+                    Default
+                  </button>
+                </li>
+                @for (option of priceOptions; track option.value) {
+                  <li>
+                    <button
+                      type="button"
+                      role="option"
+                      [attr.aria-selected]="selectedPriceSort === option.value"
+                      (click)="selectSort(option.value)"
+                    >
+                      {{ option.label }}
+                    </button>
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Drawer Overlay -->
+  @if (!sortOnly && showFilterDrawer) {
+    <div class="filter-overlay" (click)="closeFilterDrawer()"></div>
+  }
+
+  <!-- Right-Side Filter Drawer -->
+  @if (!sortOnly) {
+  <div class="filter-drawer" [class.open]="showFilterDrawer">
+    <!-- Drawer Header -->
+    <div class="drawer-header">
+      <h2>Filters</h2>
+      <button class="close-btn" (click)="closeFilterDrawer()" aria-label="Close filters">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <!-- Drawer Content -->
+    <div class="drawer-content">
+      <!-- Category Section -->
+      @if (!hideCategory) {
+        <div class="filter-section">
+          <button
+            type="button"
+            class="section-title-btn"
+            [class.expanded]="isCategoryExpanded"
+            (click)="toggleCategorySection()"
+          >
+            <h3 class="section-title">Category</h3>
+          </button>
+          @if (isCategoryExpanded) {
+            <div class="category-list">
+              @for (category of categories; track category.slug) {
+                <label class="checkbox-item">
+                  <input
+                    type="checkbox"
+                    class="checkbox-input"
+                    [checked]="isCategorySelected(category.slug)"
+                    (change)="onCategorySelect(category.slug)"
+                  />
+                  <span class="checkbox-label">{{ category.name }}</span>
+                </label>
+              }
+            </div>
+          }
+        </div>
+      }
+
+      @if (sortInDrawer) {
+        <div class="filter-section">
+          <h3 class="section-title section-title--static">Sort by</h3>
+          <div class="sort-options">
+            <label class="checkbox-item">
+              <input type="radio" name="drawerSort" class="checkbox-input" value="" [(ngModel)]="sortInput" />
+              <span class="checkbox-label">Default</span>
+            </label>
+            @for (option of priceOptions; track option.value) {
+              <label class="checkbox-item">
+                <input
+                  type="radio"
+                  name="drawerSort"
+                  class="checkbox-input"
+                  [value]="option.value"
+                  [(ngModel)]="sortInput"
+                />
+                <span class="checkbox-label">{{ option.label }}</span>
+              </label>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- Price Range Section -->
+      <div class="filter-section">
+        <button
+          type="button"
+          class="section-title-btn"
+          [class.expanded]="isPriceExpanded"
+          (click)="togglePriceSection()"
+        >
+          <h3 class="section-title">Price range</h3>
+        </button>
+
+        @if (isPriceExpanded) {
+          <div class="range-slider-unified">
+            <div class="price-range-limits">
+              <span>₹{{ MIN_PRICE }}</span>
+              <span>₹{{ MAX_PRICE }}</span>
+            </div>
+
+            <mat-slider min="{{ MIN_PRICE }}" max="{{ MAX_PRICE }}" class="price-range-slider">
+              <input
+                matSliderStartThumb
+                [(ngModel)]="minPriceInput"
+                (ngModelChange)="onMinSliderChange($event)"
+              />
+              <input
+                matSliderEndThumb
+                [(ngModel)]="maxPriceInput"
+                (ngModelChange)="onMaxSliderChange($event)"
+              />
+            </mat-slider>
+
+            <div class="price-display">
+              <span class="price-text">₹{{ minPriceInput }} – ₹{{ maxPriceInput }}</span>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Drawer Footer -->
+    <div class="drawer-footer">
+      <button class="btn-reset" (click)="onReset()">Reset</button>
+      <button class="btn-apply" (click)="applyFilters()">Apply</button>
+    </div>
+  </div>
+  }
+</div>

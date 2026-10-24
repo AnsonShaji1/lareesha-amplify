@@ -1,0 +1,38 @@
+<section class="home-section home-categories" aria-label="Categories">
+  <div class="home-section__inner">
+    <header class="home-categories__header">
+      <h2 class="home-section__title">{{ title }}</h2>
+      @if (viewAllLink) {
+        <a class="home-categories__view-all" [routerLink]="viewAllLink">View all</a>
+      }
+    </header>
+
+    @if (isLoading) {
+      <div class="home-categories__status" aria-live="polite">Loading categories…</div>
+    } @else if (categories.length) {
+      <ul class="home-categories__grid">
+        @for (category of categories; track category.id) {
+          <li class="home-categories__item">
+            <a
+              class="home-categories__card"
+              [routerLink]="['/category', category.slug]"
+              [attr.aria-label]="'Shop ' + category.name"
+            >
+              <span class="home-categories__media">
+                <img
+                  [src]="category.imageUrl || placeholderSrc"
+                  [alt]="category.name"
+                  class="home-categories__image"
+                  loading="lazy"
+                />
+              </span>
+              <span class="home-categories__label">{{ toTitleCase(category.name) }}</span>
+            </a>
+          </li>
+        }
+      </ul>
+    } @else {
+      <p class="home-categories__status">No categories available.</p>
+    }
+  </div>
+</section>

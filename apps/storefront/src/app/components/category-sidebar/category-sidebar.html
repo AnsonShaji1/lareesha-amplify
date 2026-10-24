@@ -1,0 +1,57 @@
+<aside
+  class="category-sidebar"
+  [class.category-sidebar--panel]="layout === 'panel'"
+  aria-label="Browse and filter"
+>
+  <section class="category-sidebar__section">
+    <h2 class="category-sidebar__heading">Categories</h2>
+    <nav class="category-sidebar__nav">
+      @for (category of categories; track category.slug) {
+          <a
+            class="category-sidebar__link"
+            [routerLink]="['/category', category.slug]"
+            [class.category-sidebar__link--active]="category.slug === activeSlug"
+            (click)="onCategoryLinkClick()"
+          >
+          @if (category.slug === activeSlug) {
+            <span class="category-sidebar__marker" aria-hidden="true">›</span>
+          }
+          <span>{{ category.name }}</span>
+        </a>
+      } @empty {
+        <p class="category-sidebar__empty">No categories</p>
+      }
+    </nav>
+  </section>
+
+  <section class="category-sidebar__section category-sidebar__section--price">
+    <h2 class="category-sidebar__heading">Price</h2>
+    <div class="category-sidebar__price">
+      <div class="category-sidebar__price-limits">
+        <span>₹{{ MIN_PRICE }}</span>
+        <span>₹{{ MAX_PRICE }}</span>
+      </div>
+      <mat-slider [min]="MIN_PRICE" [max]="MAX_PRICE" class="category-sidebar__slider">
+        <input
+          matSliderStartThumb
+          [(ngModel)]="minPriceInput"
+          (ngModelChange)="onMinSliderChange($event)"
+        />
+        <input
+          matSliderEndThumb
+          [(ngModel)]="maxPriceInput"
+          (ngModelChange)="onMaxSliderChange($event)"
+        />
+      </mat-slider>
+      <p class="category-sidebar__price-value">₹{{ minPriceInput }} – ₹{{ maxPriceInput }}</p>
+      <div class="category-sidebar__actions">
+        <button type="button" class="category-sidebar__btn category-sidebar__btn--ghost" (click)="resetPriceFilter()">
+          Reset
+        </button>
+        <button type="button" class="category-sidebar__btn category-sidebar__btn--apply" (click)="applyPriceFilter()">
+          Apply
+        </button>
+      </div>
+    </div>
+  </section>
+</aside>

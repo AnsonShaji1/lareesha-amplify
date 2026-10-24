@@ -1,0 +1,45 @@
+<div class="new-in-page">
+  <div class="page-header">
+    <h1>New arrivals</h1>
+    <p class="page-description">Discover our latest additions</p>
+  </div>
+
+  <div class="new-in-page__content">
+    <app-filter-bar
+      #filterBar
+      class="new-in-page__filter-bar"
+      [categories]="availableCategories"
+      (filterChange)="onFilterChange($event)"
+      (resetFilters)="onResetFilters()"
+    />
+
+    <div class="new-in-page__mobile-actions">
+      <button
+        type="button"
+        class="new-in-page__filter-btn"
+        (click)="openMobileFilters()"
+        aria-haspopup="dialog"
+        [attr.aria-expanded]="filterBar?.showFilterDrawer ?? false"
+      >
+        <mat-icon aria-hidden="true">tune</mat-icon>
+        <span>Filter</span>
+      </button>
+
+      <app-filter-bar
+        class="new-in-page__sort new-in-page__sort--mobile"
+        [sortOnly]="true"
+        (filterChange)="onSortChange($event)"
+        (resetFilters)="onSortReset()"
+      />
+    </div>
+
+    <app-product-grid
+      [products]="products"
+      [totalCount]="totalCount"
+      [hasMore]="hasMore"
+      [isLoading]="isLoading"
+      (productClick)="openProductDetail($event)"
+      (loadMore)="onLoadMore()"
+    />
+  </div>
+</div>

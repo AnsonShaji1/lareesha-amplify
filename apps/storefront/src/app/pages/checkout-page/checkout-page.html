@@ -1,0 +1,152 @@
+<div class="checkout-page">
+  <!-- Success View -->
+  <div class="checkout-content success-view" *ngIf="orderPlaced">
+    <div class="success-screen">
+      <div class="success-icon">
+        <mat-icon>check_circle</mat-icon>
+      </div>
+      <h1>Order confirmed</h1>
+      <p class="order-number">Order #{{ orderNumber }}</p>
+      <p class="confirmation-text">
+        Thank you for your purchase. You will be redirected to the home page shortly.
+      </p>
+    </div>
+  </div>
+
+  <!-- Checkout Form View -->
+  <div class="checkout-content" *ngIf="!orderPlaced">
+    <div class="page-header">
+      <h1>Checkout</h1>
+      <p class="page-description">Choose a delivery address, then place the order.</p>
+    </div>
+
+    <form class="checkout-layout" (ngSubmit)="placeOrder()">
+      <section class="checkout-delivery">
+        <div class="section-head">
+          <h2>Shipping address</h2>
+          <button
+            *ngIf="savedAddresses.length > 0"
+            type="button"
+            class="ll-cta ll-cta--primary section-add"
+            (click)="openAddressDialog()"
+          >
+            Add address
+          </button>
+        </div>
+
+          <!-- Saved Addresses -->
+          <div class="saved-addresses" *ngIf="savedAddresses.length > 0">
+            <mat-radio-group
+              class="address-list"
+              [(ngModel)]="selectedAddressId"
+              name="savedAddress"
+              (change)="onShippingAddressChange($event)"
+            >
+              <div
+                class="address-card"
+                *ngFor="let address of savedAddresses"
+                [class.selected]="selectedAddressId === address.id"
+                (click)="selectAddress(address.id)"
+              >
+                <div class="address-radio">
+                  <mat-radio-button [value]="address.id" (click)="$event.stopPropagation()"></mat-radio-button>
+                </div>
+                <div class="address-content">
+                  <div class="address-name">
+                    {{ address.full_name }}
+                    <span class="default-badge" *ngIf="address.is_default">Default</span>
+                  </div>
+                  <div class="address-text">
+                    {{ address.address_line_1 }}
+                    <span *ngIf="address.address_line_2">, {{ address.address_line_2 }}</span>
+                  </div>
+                  <div class="address-text">
+                    {{ address.city }}, {{ address.state }} {{ address.zip_code }},
+                    {{ address.country }}
+                  </div>
+                  <div class="address-phone">{{ address.phone }}</div>
+                </div>
+                <div class="address-actions">
+                  <button
+                    mat-icon-button
+                    type="button"
+                    class="btn-edit-address"
+                    (click)="editAddress(address); $event.stopPropagation()"
+                    title="Edit address"
+                    aria-label="Edit address"
+                  >
+                    <mat-icon>edit</mat-icon>
+                  </button>
+                  <button
+                    mat-icon-button
+                    type="button"
+                    class="btn-delete-address"
+                    (click)="deleteAddress(address); $event.stopPropagation()"
+                    title="Delete address"
+                    aria-label="Delete address"
+                  >
+                    <mat-icon>delete</mat-icon>
+                  </button>
+                </div>
+              </div>
+            </mat-radio-group>
+          </div>
+
+          <!-- No Saved Addresses Message -->
+          <div class="no-addresses-message" *ngIf="savedAddresses.length === 0">
+            <p>Add a delivery address before placing the order.</p>
+            <button type="button" class="ll-cta ll-cta--primary section-add" (click)="openAddressDialog()">
+              Add address
+            </button>
+          </div>
+      </section>
+
+      <aside class="checkout-summary">
+      <h2>Your order</h2>
+      <div class="summary-items">
+        <div class="summary-item" *ngFor="let item of cartItems">
+          <img [src]="item.product.images[0]" [alt]="item.product.name" />
+          <div class="item-details">
+            <p class="item-name">{{ item.product.name }}</p>
+            <p class="item-meta">Qty: {{ item.quantity }}</p>
+          </div>
+            <p class="item-price">{{ formatRupees(lineItemTotal(item)) }}</p>
+        </div>
+      </div>
+
+      <div class="summary-totals">
+        <div class="total-row">
+          <span>Subtotal</span>
+          <span>{{ formatRupees(subtotal) }}</span>
+        </div>
+        <div class="total-row">
+          <span>Shipping</span>
+          <span *ngIf="shippingPendingAddress">—</span>
+          <span *ngIf="!shippingPendingAddress">{{ shipping === 0 ? 'Free' : formatRupees(shipping) }}</span>
+        </div>
+        <div class="total-row total-row-note" *ngIf="shippingPendingAddress">
+          <span class="note">Choose a delivery address to add shipping.</span>
+        </div>
+        <!-- <div class="total-row total-row-note" *ngIf="shippingZone && !shippingPendingAddress">
+          <span class="note">Zone: {{ shippingZone }}</span>
+        </div> -->
+        <div class="total-row">
+          <span>Tax</span>
+          <span>{{ formatRupees(tax) }}</span>
+        </div>
+        <div class="total-row grand-total">
+          <span>{{ shippingPendingAddress ? 'Total excluding shipping' : 'Total' }}</span>
+          <span>{{ formatRupees(total) }}</span>
+        </div>
+      </div>
+      <button
+        type="submit"
+        class="ll-cta ll-cta--primary checkout-pay"
+        [disabled]="isProcessing"
+      >
+        {{ isProcessing ? 'Placing order…' : 'Place order' }}
+      </button>
+      </aside>
+    </form>
+  </div>
+</div>

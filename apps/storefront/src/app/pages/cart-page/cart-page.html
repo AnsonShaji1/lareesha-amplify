@@ -1,0 +1,91 @@
+<div class="cart-page">
+  <div class="page-header">
+    <h1>Cart</h1>
+    <p class="page-description">{{ summary }}</p>
+  </div>
+
+  @if (items.length === 0) {
+    <div class="cart-empty">
+      <h2>Your cart is empty</h2>
+      <p>Add pieces you want to take home.</p>
+      <a class="ll-cta ll-cta--primary" routerLink="/categories">Continue shopping</a>
+    </div>
+  } @else {
+    <div class="cart-layout">
+      <div class="cart-list">
+        @for (item of items; track item.product.id) {
+          <article class="cart-item">
+            <button type="button" class="cart-item__media" (click)="openProduct(item)">
+              <img [src]="item.product.images[0] || placeholderSrc" [alt]="item.product.name" />
+            </button>
+
+            <div class="cart-item__info">
+              @if (item.product.productCode) {
+                <p class="cart-item__code">{{ item.product.productCode }}</p>
+              }
+              <h2>
+                <button type="button" (click)="openProduct(item)">{{ item.product.name }}</button>
+              </h2>
+              <p class="cart-item__unit">
+                <span>{{ formatRupees(lineTotal(item)) }}</span>
+                @if (item.quantity > 1) {
+                  <span class="cart-item__each">{{ formatRupees(unitPrice(item)) }} each</span>
+                }
+              </p>
+
+              <div class="cart-item__actions">
+                <div class="cart-item__qty">
+                  <button
+                    type="button"
+                    (click)="decrease(item)"
+                    [disabled]="item.quantity <= 1"
+                    aria-label="Decrease quantity"
+                  >
+                    −
+                  </button>
+                  <span>{{ item.quantity }}</span>
+                  <button
+                    type="button"
+                    (click)="increase(item)"
+                    [disabled]="item.quantity >= item.product.availableStock"
+                    aria-label="Increase quantity"
+                  >
+                    +
+                  </button>
+                </div>
+                <button type="button" class="cart-item__remove" (click)="remove(item)" aria-label="Remove from cart">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+
+              @if (item.product.availableStock > 0 && item.quantity >= item.product.availableStock) {
+                <p class="cart-item__note">
+                  @if (item.product.availableStock <= 5) {
+                    Only {{ item.product.availableStock }} left
+                  } @else {
+                    Maximum quantity reached
+                  }
+                </p>
+              } @else if (item.product.availableStock > 0 && item.product.availableStock <= 5) {
+                <p class="cart-item__note">Only {{ item.product.availableStock }} left</p>
+              }
+            </div>
+          </article>
+        }
+      </div>
+
+      <aside class="cart-summary">
+        <p class="cart-summary__label">Subtotal</p>
+        <p class="cart-summary__amount">{{ formatRupees(total) }}</p>
+        <p class="cart-summary__note">Shipping is calculated at checkout.</p>
+        @if (errorMessage) {
+          <p class="cart-summary__error">{{ errorMessage }}</p>
+        }
+        <button type="button" class="ll-cta ll-cta--primary cart-summary__checkout" (click)="checkout()">
+          Checkout
+        </button>
+        <a class="cart-summary__continue" routerLink="/categories">Continue shopping</a>
+      </aside>
+    </div>
+  }
+</div>

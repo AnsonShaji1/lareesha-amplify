@@ -1,0 +1,125 @@
+<mat-toolbar class="header">
+  <div class="header-container">
+    <button
+      type="button"
+      class="nav-hamburger"
+      (click)="toggleMobileNav()"
+      [attr.aria-expanded]="isMobileNavOpen"
+      aria-controls="mobile-nav-panel"
+      aria-label="Open navigation menu"
+    >
+      <mat-icon>menu</mat-icon>
+    </button>
+    <div class="logo">
+      <h1 class="logo-full">
+        <a routerLink="/">
+          <img src="/lareesha_logo.png" alt="Lareesha Luxe Logo" class="logo-icon" />
+        </a>
+        <a routerLink="/" class="logo-link">Lareesha Luxe</a>
+      </h1>
+      <div class="logo-short">
+        <a routerLink="/">
+          <img src="/lareesha_logo.png" alt="Lareesha Luxe Logo" class="logo-icon" />
+        </a>
+      </div>
+    </div>
+    <nav class="nav-menu">
+      <a routerLink="/categories" class="nav-link" routerLinkActive="active">All Categories</a>
+      <a routerLink="/new-in" class="nav-link" routerLinkActive="active">New arrivals</a>
+      <a routerLink="/shop" class="nav-link" routerLinkActive="active">Shop All</a>
+    </nav>
+    <div class="header-actions">
+      <button mat-icon-button aria-label="Search" (click)="onSearchClick()">
+        <mat-icon>search</mat-icon>
+      </button>
+      <a
+        mat-icon-button
+        routerLink="/wishlist"
+        routerLinkActive="is-active"
+        [matBadge]="wishlistItemCount"
+        [matBadgeHidden]="wishlistItemCount === 0"
+        matBadgeColor="accent"
+        aria-label="Wishlist"
+      >
+        <mat-icon>favorite_border</mat-icon>
+      </a>
+      <a
+        mat-icon-button
+        routerLink="/cart"
+        routerLinkActive="is-active"
+        [matBadge]="cartItemCount"
+        [matBadgeHidden]="cartItemCount === 0"
+        matBadgeColor="accent"
+        aria-label="Shopping cart"
+      >
+        <span class="material-symbols-outlined">shopping_cart</span>
+      </a>
+      <div class="account-wrapper">
+        <button
+          mat-icon-button
+          aria-label="Account"
+          (click)="onAccountClick()"
+          [class.logged-in]="isAuthenticated"
+        >
+          @if (isAuthenticated) {
+            <div class="user-avatar">{{ getUserInitial() }}</div>
+          } @else {
+            <mat-icon>person outline</mat-icon>
+          }
+        </button>
+        @if (isAuthenticated) {
+          <app-account-menu
+            [isOpen]="isAccountMenuOpen"
+            (closeMenu)="closeAccountMenu()"
+          >
+          </app-account-menu>
+        }
+      </div>
+    </div>
+  </div>
+</mat-toolbar>
+
+@if (isMobileNavOpen) {
+  <div
+    class="mobile-nav__backdrop"
+    (click)="closeMobileNav()"
+    role="presentation"
+  ></div>
+}
+<nav
+  id="mobile-nav-panel"
+  class="mobile-nav__panel"
+  [class.mobile-nav__panel--open]="isMobileNavOpen"
+  [attr.aria-hidden]="!isMobileNavOpen"
+>
+  <div class="mobile-nav__header">
+    <span>Menu</span>
+    <button type="button" class="mobile-nav__close" (click)="closeMobileNav()" aria-label="Close menu">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <a
+    class="mobile-nav__link"
+    routerLink="/categories"
+    routerLinkActive="active"
+    (click)="closeMobileNav()"
+  >
+    All Categories
+  </a>
+  <a
+    class="mobile-nav__link"
+    routerLink="/new-in"
+    routerLinkActive="active"
+    (click)="closeMobileNav()"
+  >
+    New arrivals
+  </a>
+  <a
+    class="mobile-nav__link"
+    routerLink="/shop"
+    routerLinkActive="active"
+    (click)="closeMobileNav()"
+  >
+    Shop All
+  </a>
+</nav>

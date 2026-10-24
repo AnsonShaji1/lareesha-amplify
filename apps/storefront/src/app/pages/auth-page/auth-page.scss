@@ -1,0 +1,35 @@
+:host {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.auth-page {
+  flex: 1 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 20px 72px;
+  background: var(--ll-bg);
+}
+
+.app-auth-panel {
+  width: min(760px, 100%);
+  background: var(--ll-surface);
+  padding: 36px;
+  border: 1px solid var(--ll-border);
+  border-radius: 12px;
+}
+
+@media (max-width: 720px) {
+  .auth-page {
+    align-items: flex-start;
+    padding: 28px 16px 48px;
+  }
+
+  .app-auth-panel {
+    width: min(440px, 100%);
+    padding: 28px 20px 24px;
+  }
+}

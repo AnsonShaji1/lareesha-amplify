@@ -1,0 +1,16 @@
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--ll-bg);
+  /* Space for fixed header so routed content is not covered */
+  padding-top: var(--app-header-height);
+  box-sizing: border-box;
+}
+
+.app-main {
+  flex: 1 0 auto;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}

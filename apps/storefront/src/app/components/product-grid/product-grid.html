@@ -1,0 +1,30 @@
+<div class="product-grid-container">
+  <div class="product-header">
+    <p class="product-count">({{ totalCount || products.length }} Products)</p>
+  </div>
+
+  <div class="product-grid" [class.product-grid--cols-3]="gridColumns === 3">
+    @for (product of products; track product.id) {
+      <app-product-card
+        [product]="product"
+        (click)="onProductClick(product)"
+        (authRequired)="onAuthRequired()"
+      >
+      </app-product-card>
+    } @empty {
+      @if (!isLoading) {
+        <div class="empty-state">
+          <p>No products found matching your filters.</p>
+        </div>
+      }
+    }
+  </div>
+
+  @if (isLoading) {
+    <div class="grid-status">{{ products.length ? 'Loading more products...' : 'Loading products...' }}</div>
+  } @else if (!hasMore && products.length > 0) {
+    <div class="grid-status">You've reached the end.</div>
+  }
+
+  <div #scrollSentinel class="scroll-sentinel" aria-hidden="true"></div>
+</div>

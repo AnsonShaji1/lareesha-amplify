@@ -1,0 +1,94 @@
+<div class="account-settings-container">
+  <div class="settings-header">
+    <h1>Account Settings</h1>
+  </div>
+
+  <div class="settings-content" *ngIf="currentUser">
+    <div class="settings-card">
+      <div class="card-header">
+        <h2>Personal Information</h2>
+        <button *ngIf="!isEditing" class="edit-button" (click)="toggleEdit()">
+          <mat-icon>edit</mat-icon>
+          Edit
+        </button>
+      </div>
+
+      <form class="settings-form" *ngIf="isEditing">
+        <div class="form-group">
+          <label for="firstName">First Name</label>
+          <input
+            type="text"
+            id="firstName"
+            [(ngModel)]="formData.first_name"
+            name="first_name"
+            placeholder="Enter your first name"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <input
+            type="text"
+            id="lastName"
+            [(ngModel)]="formData.last_name"
+            name="last_name"
+            placeholder="Enter your last name"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            id="email"
+            [(ngModel)]="formData.email"
+            name="email"
+            placeholder="Enter your email"
+            disabled
+          />
+          <small class="help-text">Email cannot be changed</small>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="cancel-button" (click)="toggleEdit()" [disabled]="isSaving">
+            Cancel
+          </button>
+          <button type="button" class="save-button" (click)="saveChanges()" [disabled]="isSaving">
+            {{ isSaving ? 'Saving...' : 'Save Changes' }}
+          </button>
+        </div>
+      </form>
+
+      <div class="info-display" *ngIf="!isEditing">
+        <div class="info-item">
+          <label>First Name</label>
+          <p>{{ currentUser.first_name || 'Not set' }}</p>
+        </div>
+
+        <div class="info-item">
+          <label>Last Name</label>
+          <p>{{ currentUser.last_name || 'Not set' }}</p>
+        </div>
+
+        <div class="info-item">
+          <label>Email</label>
+          <p>{{ currentUser.email }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="settings-card">
+      <div class="card-header">
+        <h2>Account Actions</h2>
+      </div>
+
+      <div class="action-list">
+        <button class="action-item" (click)="goBack()">
+          <mat-icon>receipt_long</mat-icon>
+          <span>View Order History</span>
+          <mat-icon class="arrow">chevron_right</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

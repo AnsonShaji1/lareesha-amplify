@@ -1,0 +1,119 @@
+<div class="order-page">
+  @if (isLoading) {
+    <div class="order-state">
+      <p>Loading order…</p>
+    </div>
+  } @else if (order) {
+    <header class="page-header">
+      <h1>Order</h1>
+      <p class="page-description">
+        <span class="order-number">{{ order.order_number }}</span>
+        <span>{{ formatDate(order.created_at) }}</span>
+      </p>
+    </header>
+
+    <div class="order-layout">
+      <div class="order-main">
+        <div class="order-items">
+          @for (item of order.items; track item.id) {
+            <article class="order-item">
+              @if (item.product_url) {
+                <a class="order-item__media" [routerLink]="item.product_url">
+                  @if (item.product_image) {
+                    <img [src]="item.product_image" [alt]="item.product_name" />
+                  }
+                </a>
+              } @else {
+                <div class="order-item__media">
+                  @if (item.product_image) {
+                    <img [src]="item.product_image" [alt]="item.product_name" />
+                  }
+                </div>
+              }
+
+              <div class="order-item__info">
+                <h2>
+                  @if (item.product_url) {
+                    <a [routerLink]="item.product_url">{{ item.product_name }}</a>
+                  } @else {
+                    {{ item.product_name }}
+                  }
+                </h2>
+                <p class="order-item__meta">Qty {{ item.quantity }}</p>
+                <p class="order-item__price">
+                  <span>{{ formatRupees(item.line_total) }}</span>
+                  @if (item.quantity > 1) {
+                    <span class="order-item__each">{{ formatRupees(item.product_price) }} each</span>
+                  }
+                </p>
+              </div>
+            </article>
+          }
+        </div>
+
+        <section class="order-address">
+          <h2>Shipping address</h2>
+          <p class="order-address__name">{{ order.first_name }} {{ order.last_name }}</p>
+          @if (order.address) {
+            <p>{{ order.address }}</p>
+          }
+          @if (order.apartment) {
+            <p>{{ order.apartment }}</p>
+          }
+          <p>
+            {{ order.city }}@if (order.state) {, {{ order.state }} }
+            {{ order.zip_code }}
+          </p>
+          @if (order.country) {
+            <p>{{ order.country }}</p>
+          }
+          @if (order.phone) {
+            <p>{{ order.phone }}</p>
+          }
+        </section>
+      </div>
+
+      <aside class="order-summary">
+        <div class="order-status">
+          <div class="order-status__row">
+            <span>Package</span>
+            <span class="order-pill" [ngClass]="'order-pill--' + getStatusInfo(order.status).color">
+              {{ getStatusInfo(order.status).label }}
+            </span>
+          </div>
+          @if (order.payment_status) {
+            <div class="order-status__row">
+              <span>Payment</span>
+              <span
+                class="order-pill"
+                [ngClass]="'order-pill--' + getPaymentStatusInfo(order.payment_status).color"
+              >
+                {{ getPaymentStatusInfo(order.payment_status).label }}
+              </span>
+            </div>
+          }
+        </div>
+        <p class="order-summary__note">{{ getOrderMessage(order) }}</p>
+
+        <div class="order-totals">
+          <div class="order-totals__row">
+            <span>Subtotal</span>
+            <span>{{ formatRupees(order.subtotal) }}</span>
+          </div>
+          <div class="order-totals__row">
+            <span>Shipping</span>
+            <span>{{ formatShipping(order.shipping) }}</span>
+          </div>
+          <div class="order-totals__row">
+            <span>Tax</span>
+            <span>{{ formatRupees(order.tax) }}</span>
+          </div>
+          <div class="order-totals__row order-totals__row--total">
+            <span>Total</span>
+            <span>{{ formatRupees(order.total) }}</span>
+          </div>
+        </div>
+      </aside>
+    </div>
+  }
+</div>

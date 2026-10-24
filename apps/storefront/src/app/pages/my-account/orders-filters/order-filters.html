@@ -1,0 +1,70 @@
+<div class="filters-panel">
+  <div class="filters-header">
+    <h3 class="filters-title">Filters</h3>
+    <div class="filter-actions">
+      <span *ngIf="getActiveFilterCount() > 0" class="filter-count">
+        {{ getActiveFilterCount() }}
+      </span>
+      <button
+        *ngIf="getActiveFilterCount() > 0"
+        class="clear-filters-btn"
+        (click)="clearFilters()"
+        type="button"
+      >
+        Clear All
+      </button>
+    </div>
+  </div>
+
+  <!-- Order Status Filter -->
+  <div class="filter-section">
+    <div class="section-header" (click)="toggleSection('status')">
+      <h4>Order Status</h4>
+      <mat-icon class="toggle-icon" [class.expanded]="expandedSections.status">
+        expand_more
+      </mat-icon>
+    </div>
+
+    <div *ngIf="expandedSections.status" class="section-content">
+      <div class="filter-options">
+        <label *ngFor="let statusKey of Object.keys(statusLabels)" class="checkbox-label">
+          <input
+            type="checkbox"
+            [checked]="selectedStatuses[statusKey]"
+            (change)="toggleStatus(statusKey)"
+            class="checkbox-input"
+          />
+          <span class="checkbox-custom"></span>
+          <span class="label-text">{{ statusLabels[statusKey] }}</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Time Filter -->
+  <div class="filter-section">
+    <div class="section-header" (click)="toggleSection('period')">
+      <h4>Order Time</h4>
+      <mat-icon class="toggle-icon" [class.expanded]="expandedSections.period">
+        expand_more
+      </mat-icon>
+    </div>
+
+    <div *ngIf="expandedSections.period" class="section-content">
+      <div class="filter-options">
+        <label *ngFor="let periodKey of Object.keys(periodLabels)" class="checkbox-label">
+          <input
+            type="checkbox"
+            [checked]="selectedPeriods[periodKey]"
+            (change)="togglePeriod(periodKey)"
+            class="checkbox-input"
+          />
+          <span class="checkbox-custom"></span>
+          <span class="label-text">{{ periodLabels[periodKey] }}</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <button type="button" class="ll-cta apply-filters-btn" (click)="applyFilters()">Apply</button>
+</div>

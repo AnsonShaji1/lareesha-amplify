@@ -1,0 +1,56 @@
+<section class="hero" aria-label="Featured">
+  <div class="hero__media">
+    <img
+      class="hero__image"
+      src="/coverimage.png"
+      alt="Fine gold jewelry, styled in soft light"
+      width="1536"
+      height="1024"
+      fetchpriority="high"
+    />
+    <div class="hero__overlay" aria-hidden="true"></div>
+  </div>
+  <div class="hero__content">
+    <h1 class="hero__title">Made To Match Your Vibe</h1>
+    <p class="hero__sub">Timeless master pieces—crafted to move with you, day to night.</p>
+    <div class="hero__actions">
+      <button type="button" class="ll-cta ll-cta--primary" (click)="scrollToShop()">Shop now</button>
+      <a class="ll-cta ll-cta--ghost" routerLink="/new-in">New arrivals</a>
+    </div>
+  </div>
+</section>
+
+<div id="shop">
+  <app-home-category-grid
+    [categories]="homepageCategories"
+    [isLoading]="homepageLoading"
+    title="Categories"
+    viewAllLink="/categories"
+  ></app-home-category-grid>
+
+  <app-home-product-carousel
+    title="New Arrivals"
+    viewAllLink="/new-in"
+    [products]="newArrivals"
+    [totalCount]="newArrivalsCount"
+    [isLoading]="homepageLoading"
+    loadingMessage="Loading new arrivals…"
+    emptyMessage="No new arrivals yet. Check back soon."
+    [sectionBottomSpacing]="categorySections.length === 0"
+    (productClick)="openProductDetail($event)"
+  ></app-home-product-carousel>
+
+  @for (section of categorySections; track section.category.slug; let last = $last) {
+    <app-home-product-carousel
+      [title]="section.category.name"
+      [viewAllLink]="['/category', section.category.slug]"
+      [products]="section.products"
+      [totalCount]="section.productCount"
+      [isLoading]="homepageLoading"
+      [loadingMessage]="'Loading ' + section.category.name + '…'"
+      [emptyMessage]="'No products in ' + section.category.name + ' yet.'"
+      [sectionBottomSpacing]="last"
+      (productClick)="openProductDetail($event)"
+    />
+  }
+</div>

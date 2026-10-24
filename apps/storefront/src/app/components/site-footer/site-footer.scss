@@ -1,0 +1,108 @@
+.site-footer {
+  margin-top: auto;
+  background: #2c261f;
+  color: #f6f1ea;
+  border-top: 1px solid rgba(246, 241, 234, 0.12);
+}
+
+.site-footer__inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 64px 40px 40px;
+  display: grid;
+  grid-template-columns: 1.2fr repeat(2, 1fr) 1fr;
+  gap: 40px 32px;
+  align-items: start;
+}
+
+.site-footer__name {
+  font-family: var(--ll-font-display);
+  font-size: var(--ll-text-lg);
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: #f6f1ea;
+  margin: 0 0 8px;
+}
+
+.site-footer__tagline {
+  font-size: var(--ll-text-sm);
+  line-height: 1.5;
+  color: rgba(246, 241, 234, 0.62);
+  margin: 0;
+  max-width: 280px;
+}
+
+.site-footer__heading {
+  display: block;
+  font-size: var(--ll-text-xs);
+  font-weight: 500;
+  letter-spacing: var(--ll-label-tracking);
+  text-transform: uppercase;
+  color: rgba(246, 241, 234, 0.5);
+  margin-bottom: 14px;
+}
+
+.site-footer__col,
+.site-footer__social {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.site-footer__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--ll-text-sm);
+  color: rgba(246, 241, 234, 0.82);
+  text-decoration: none;
+  transition: color 0.25s var(--ll-ease);
+
+  &:hover {
+    color: #f6f1ea;
+  }
+}
+
+.site-footer__icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  line-height: 16px;
+}
+
+.site-footer__social-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.site-footer__bar {
+  border-top: 1px solid rgba(246, 241, 234, 0.12);
+  padding: 16px 24px;
+  text-align: center;
+
+  p {
+    margin: 0;
+    font-size: var(--ll-text-xs);
+    letter-spacing: 0.06em;
+    color: rgba(246, 241, 234, 0.45);
+  }
+}
+
+@media (max-width: 900px) {
+  .site-footer__inner {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 36px 20px 28px;
+  }
+
+  .site-footer__brand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .site-footer__inner {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+}

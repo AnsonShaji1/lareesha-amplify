@@ -1,0 +1,12 @@
+<div class="app">
+  <app-header
+    (searchClick)="openSearch()"
+    (signInClick)="openSignIn()"
+  >
+  </app-header>
+  <main class="app-main">
+    <router-outlet></router-outlet>
+  </main>
+  <app-site-footer></app-site-footer>
+  <app-search-modal [isOpen]="isSearchOpen" (closeModal)="closeSearch()"> </app-search-modal>
+</div>

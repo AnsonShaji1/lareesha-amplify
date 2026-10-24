@@ -1,0 +1,96 @@
+<div class="profile-page">
+  <div class="section-head">
+    <h2>Profile</h2>
+    @if (!isEditing) {
+      <button type="button" class="ll-cta profile-edit" (click)="toggleEdit()">Edit</button>
+    }
+  </div>
+
+  <form class="profile-form" (ngSubmit)="saveProfile()">
+    <label class="field">
+      <span>First name</span>
+      <input type="text" [(ngModel)]="formData.first_name" name="first_name" [readonly]="!isEditing" />
+    </label>
+
+    <label class="field">
+      <span>Last name</span>
+      <input type="text" [(ngModel)]="formData.last_name" name="last_name" [readonly]="!isEditing" />
+    </label>
+
+    <label class="field">
+      <span>Email</span>
+      <input type="email" [(ngModel)]="formData.email" name="email" readonly />
+      <small>Email cannot be changed.</small>
+    </label>
+
+    <div class="field">
+      <span>Gender</span>
+      @if (!isEditing) {
+        <input type="text" [value]="genderLabel" readonly />
+      } @else {
+        <div class="gender-menu">
+          <button
+            type="button"
+            class="gender-menu__trigger"
+            (click)="toggleGenderMenu()"
+            [attr.aria-expanded]="genderMenuOpen"
+            aria-haspopup="listbox"
+          >
+            {{ genderLabel }}
+          </button>
+          @if (genderMenuOpen) {
+            <ul class="gender-menu__list" role="listbox">
+              <li>
+                <button type="button" role="option" [attr.aria-selected]="!formData.gender" (click)="selectGender('')">
+                  Select gender
+                </button>
+              </li>
+              @for (option of genderOptions; track option.value) {
+                <li>
+                  <button
+                    type="button"
+                    role="option"
+                    [attr.aria-selected]="formData.gender === option.value"
+                    (click)="selectGender(option.value)"
+                  >
+                    {{ option.label }}
+                  </button>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      }
+    </div>
+
+    <label class="field" [class.field--invalid]="phoneError">
+      <span>Mobile number</span>
+      <input
+        type="tel"
+        inputmode="numeric"
+        maxlength="14"
+        [(ngModel)]="formData.phone"
+        name="phone"
+        [readonly]="!isEditing"
+        placeholder="10-digit mobile number"
+        (ngModelChange)="onPhoneChange()"
+      />
+      @if (phoneError) {
+        <small class="field-error">{{ phoneError }}</small>
+      } @else if (isEditing) {
+        <small>Use a 10-digit Indian mobile number, for example 9876543210.</small>
+      }
+    </label>
+
+    @if (isEditing) {
+      <div class="profile-actions">
+        <button type="submit" class="ll-cta profile-save" [disabled]="isSaving">
+          {{ isSaving ? 'Saving…' : 'Save changes' }}
+        </button>
+        <button type="button" class="ll-cta profile-cancel" (click)="cancel()" [disabled]="isSaving">
+          Cancel
+        </button>
+      </div>
+    }
+  </form>
+</div>

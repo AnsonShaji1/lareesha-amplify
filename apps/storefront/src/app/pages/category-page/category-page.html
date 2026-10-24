@@ -1,0 +1,39 @@
+<div class="category-page">
+  <div class="page-header">
+    <h1>{{ pageTitle }}</h1>
+    <p class="page-description">Shop this category</p>
+  </div>
+
+  <div class="category-page__content">
+    <div class="category-page__mobile-actions">
+      <button
+        type="button"
+        class="category-page__filter-btn"
+        (click)="openFilters()"
+        aria-haspopup="dialog"
+        [attr.aria-expanded]="filterBar?.showFilterDrawer ?? false"
+      >
+        <mat-icon aria-hidden="true">tune</mat-icon>
+        <span>Filter</span>
+      </button>
+    </div>
+
+    <app-filter-bar
+      #filterBar
+      class="category-page__filter-bar"
+      [hideCategory]="true"
+      [sortInDrawer]="true"
+      (filterChange)="onFilterChange($event)"
+      (resetFilters)="onResetFilters()"
+    />
+
+    <app-product-grid
+      [products]="products"
+      [totalCount]="totalCount"
+      [hasMore]="hasMore"
+      [isLoading]="isLoading"
+      (productClick)="openProductDetail($event)"
+      (loadMore)="onLoadMore()"
+    />
+  </div>
+</div>

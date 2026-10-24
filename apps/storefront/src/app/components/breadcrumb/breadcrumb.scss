@@ -1,0 +1,89 @@
+/* Matches account area: sidebar nav labels + page subtitles (my-account, account-orders) */
+.breadcrumb-nav {
+  background: var(--ll-surface);
+  border-bottom: 1px solid var(--ll-border);
+  padding: 0.875rem 1rem;
+  font-family: var(--ll-font-body);
+  font-size: var(--ll-text-sm);
+  font-weight: 400;
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+  color: var(--ll-muted);
+  position: sticky;
+  top: var(--app-header-height);
+  z-index: 10;
+  -webkit-tap-highlight-color: transparent;
+
+  .breadcrumb-list {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE/Edge legacy */
+
+    &::-webkit-scrollbar {
+      height: 0;
+    }
+
+    .breadcrumb-item {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      margin: 0;
+      padding: 0;
+
+      .breadcrumb-link {
+        background: none;
+        border: none;
+        color: var(--ll-muted);
+        cursor: pointer;
+        font-family: inherit;
+        font-size: inherit;
+        font-weight: 400;
+        line-height: inherit;
+        letter-spacing: inherit;
+        padding: 2px 4px;
+        margin: -2px -4px;
+        border-radius: 4px;
+        text-decoration: none;
+        text-align: left;
+        transition:
+          background-color 0.25s var(--ll-ease),
+          color 0.25s var(--ll-ease);
+
+        &:hover {
+          background: var(--ll-gold-soft);
+          color: var(--ll-gold);
+        }
+      }
+
+      .breadcrumb-current {
+        color: var(--ll-text);
+        font-size: inherit;
+        font-weight: 500;
+        line-height: inherit;
+        letter-spacing: inherit;
+      }
+
+      .breadcrumb-separator {
+        color: var(--ll-muted);
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+        margin: 0 0.15rem;
+        opacity: 0.55;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .breadcrumb-nav {
+    padding: 0.75rem 0.875rem;
+    font-size: var(--ll-text-sm);
+  }
+}

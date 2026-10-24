@@ -1,0 +1,19 @@
+@import 'tailwindcss';
+
+@source './app/**/*.{html,ts}';
+
+@theme {
+  --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+  --font-sans: 'Roboto', 'Helvetica Neue', sans-serif;
+  --color-ll-cream: #fbf6ec;
+  --color-ll-ivory: #fffbf5;
+  --color-ll-warm: #f0e8dc;
+  --color-ll-gold: #6b4a1a;
+  --color-ll-gold-hover: #543810;
+  --color-ll-text: #0b0b0b;
+  --color-ll-muted: #6b6b6b;
+  --color-ll-border: #e8e2d6;
+  --shadow-lux: 0 25px 60px -12px rgba(43, 32, 19, 0.18);
+  --shadow-lux-sm: 0 12px 40px -8px rgba(43, 32, 19, 0.12);
+  --ease-lux: cubic-bezier(0.22, 1, 0.36, 1);
+}

@@ -1,0 +1,91 @@
+<div class="manage-addresses-container">
+  <div class="header">
+    <h2>My Addresses</h2>
+    <button type="button" class="ll-cta ll-cta--primary btn-add-address" (click)="openAddDialog()">
+      <mat-icon>add</mat-icon>
+      Add New Address
+    </button>
+  </div>
+
+  @if (isLoading) {
+    <div class="loading">
+      <p>Loading addresses...</p>
+    </div>
+  } @else if (addresses.length === 0) {
+    <div class="empty-state">
+      <mat-icon>location_off</mat-icon>
+      <p>No addresses saved yet</p>
+      <button type="button" class="ll-cta ll-cta--outline-dark btn-add-first" (click)="openAddDialog()">
+        Add your first address
+      </button>
+    </div>
+  } @else {
+    <div class="addresses-grid">
+      @for (address of addresses; track address.id) {
+        <div class="address-card" [class.default]="address.is_default">
+          <div class="card-header">
+            <div class="header-left">
+              <mat-icon class="location-icon">location_on</mat-icon>
+              <div class="title-info">
+                <h3>{{ address.full_name }}</h3>
+                <p class="label">Address</p>
+              </div>
+            </div>
+            @if (address.is_default) {
+              <span class="default-badge">Default</span>
+            }
+          </div>
+
+          <div class="card-body">
+            <div class="address-details">
+              <p class="address-line">{{ address.address_line_1 }}</p>
+              @if (address.address_line_2) {
+                <p class="address-line">{{ address.address_line_2 }}</p>
+              }
+              <p class="address-line">
+                {{ address.city }}, {{ address.state }} {{ address.zip_code }}
+              </p>
+              <p class="address-line">{{ address.country }}</p>
+            </div>
+
+            <div class="contact-details">
+              <p class="contact-line">
+                <mat-icon>phone</mat-icon>
+                <span>{{ address.phone }}</span>
+              </p>
+              <p class="contact-line">
+                <mat-icon>email</mat-icon>
+                <span>{{ address.email }}</span>
+              </p>
+            </div>
+          </div>
+
+          <div class="card-actions">
+            @if (!address.is_default) {
+              <button
+                class="action-btn secondary"
+                (click)="setDefault(address)"
+                title="Set as default address"
+              >
+                <mat-icon>check_circle_outline</mat-icon>
+                <span>Set Default</span>
+              </button>
+            }
+            <button class="action-btn primary" (click)="editAddress(address)" title="Edit address">
+              <mat-icon>edit</mat-icon>
+              <span>Edit</span>
+            </button>
+            <button
+              class="action-btn danger"
+              (click)="deleteAddress(address)"
+              title="Delete address"
+            >
+              <mat-icon>delete</mat-icon>
+              <span>Delete</span>
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  }
+</div>

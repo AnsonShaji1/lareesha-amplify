@@ -1,0 +1,199 @@
+@if (!isBottomSheet) {
+  <div class="address-dialog-overlay" role="presentation">
+    <div
+      class="address-dialog-container"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="address-dialog-title"
+      (click)="$event.stopPropagation()"
+    >
+      <ng-container *ngTemplateOutlet="addressEditor"></ng-container>
+    </div>
+  </div>
+} @else {
+  <div
+    class="address-sheet-root"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="address-dialog-title"
+    (click)="$event.stopPropagation()"
+  >
+    <div class="address-sheet-drag-hint" aria-hidden="true"></div>
+    <ng-container *ngTemplateOutlet="addressEditor"></ng-container>
+  </div>
+}
+
+<ng-template #addressEditor>
+  <div class="dialog-header">
+    <h2 id="address-dialog-title">{{ isEditMode ? 'Edit address' : 'Add address' }}</h2>
+    <button type="button" class="close-btn" (click)="onCancel()" aria-label="Close dialog">
+      <mat-icon aria-hidden="true">close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="form" class="address-form">
+    <!-- Full Name -->
+    <div class="form-group full-width material-field">
+      <mat-form-field appearance="outline" class="field">
+        <mat-label>Full Name</mat-label>
+        <input matInput type="text" formControlName="full_name" placeholder="John Doe" required />
+      </mat-form-field>
+    </div>
+
+    <!-- Phone -->
+    <div class="form-group full-width material-field">
+      <mat-form-field appearance="outline" class="field">
+        <mat-label>Phone Number</mat-label>
+        <input
+          matInput
+          type="tel"
+          formControlName="phone"
+          placeholder="9876543210"
+          maxlength="10"
+          required
+        />
+      </mat-form-field>
+    </div>
+
+    <!-- Email -->
+    <div class="form-group full-width material-field">
+      <mat-form-field appearance="outline" class="field">
+        <mat-label>Email Address</mat-label>
+        <input
+          matInput
+          type="email"
+          formControlName="email"
+          placeholder="john@example.com"
+          required
+        />
+      </mat-form-field>
+    </div>
+
+    <!-- Address Line 1 -->
+    <div class="form-group full-width material-field">
+      <mat-form-field appearance="outline" class="field">
+        <mat-label>Address</mat-label>
+        <input
+          matInput
+          type="text"
+          formControlName="address_line_1"
+          placeholder="123 Main Street"
+          required
+        />
+      </mat-form-field>
+    </div>
+
+    <!-- Address Line 2 -->
+    <div class="form-group full-width material-field">
+      <mat-form-field appearance="outline" class="field">
+        <mat-label>Apartment, Suite, etc. (Optional)</mat-label>
+        <input
+          matInput
+          type="text"
+          formControlName="address_line_2"
+          placeholder="Apartment 101"
+        />
+      </mat-form-field>
+    </div>
+
+    <!-- City & State -->
+    <div class="form-row">
+      <div class="form-group half-width material-field">
+        <mat-form-field appearance="outline" class="field">
+          <mat-label>City</mat-label>
+          <input matInput type="text" formControlName="city" placeholder="Mumbai" required />
+          @if (form.get('city')?.hasError('required') && form.get('city')?.touched) {
+            <mat-error>City is required</mat-error>
+          }
+          @if (form.get('city')?.hasError('pincodeCityMismatch') && form.get('city')?.touched) {
+            <mat-error>This city does not match the selected pincode</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <div class="form-group half-width material-field">
+        <mat-form-field appearance="outline" class="field">
+          <mat-label>State</mat-label>
+          <mat-select formControlName="state" panelClass="address-select-panel" required>
+            <mat-option [value]="''" disabled>Select State</mat-option>
+            @for (state of indianStates; track state) {
+              <mat-option [value]="state">{{ state }}</mat-option>
+            }
+          </mat-select>
+          @if (form.get('state')?.hasError('required') && form.get('state')?.touched) {
+            <mat-error>State is required</mat-error>
+          }
+          @if (form.get('state')?.hasError('pincodeStateMismatch') && form.get('state')?.touched) {
+            <mat-error>This state does not match the selected pincode</mat-error>
+          }
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- ZIP Code & Country -->
+    <div class="form-row">
+      <div class="form-group half-width material-field">
+        <mat-form-field appearance="outline" class="field">
+          <mat-label>PIN Code</mat-label>
+          <input
+            matInput
+            type="text"
+            formControlName="zip_code"
+            placeholder="400001"
+            maxlength="6"
+            required
+          />
+          @if (form.get('zip_code')?.hasError('required') && form.get('zip_code')?.touched) {
+            <mat-error>PIN code is required</mat-error>
+          }
+          @if (form.get('zip_code')?.hasError('pattern') && form.get('zip_code')?.touched) {
+            <mat-error>PIN code must be exactly 6 digits</mat-error>
+          }
+          @if (form.get('zip_code')?.hasError('invalidLength') && form.get('zip_code')?.touched) {
+            <mat-error>PIN code must be exactly 6 digits</mat-error>
+          }
+          @if (form.get('zip_code')?.hasError('invalidPincode') && form.get('zip_code')?.touched) {
+            <mat-error>Enter a valid Indian PIN code</mat-error>
+          }
+          @if (form.get('zip_code')?.hasError('lookupFailed') && form.get('zip_code')?.touched) {
+            <mat-error>{{ pincodeLookupError }}</mat-error>
+          }
+        </mat-form-field>
+        @if (isValidatingPincode) {
+          <small class="field-hint">Validating PIN code...</small>
+        }
+        @if (locationAutoFilled && !isValidatingPincode && !form.get('zip_code')?.errors) {
+          <small class="field-hint">City/State updated based on this PIN code.</small>
+        }
+        @if (pincodeSuggestions.length > 0 && !form.get('zip_code')?.errors) {
+          <small class="field-hint">Available post offices: {{ pincodeSuggestions.join(', ') }}</small>
+        }
+      </div>
+
+      <div class="form-group half-width material-field">
+        <mat-form-field appearance="outline" class="field">
+          <mat-label>Country</mat-label>
+          <input matInput type="text" formControlName="country" placeholder="India" readonly />
+        </mat-form-field>
+      </div>
+    </div>
+
+    <!-- Set as Default -->
+    <div class="checkbox-field">
+      <mat-checkbox formControlName="is_default" [disabled]="isDefaultDisabled">
+        Set as default address
+        @if (isFirstAddress) {
+          <span class="first-address-hint">(Required for first address)</span>
+        }
+      </mat-checkbox>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="dialog-actions">
+      <button type="button" class="ll-cta btn-cancel" (click)="onCancel()">Cancel</button>
+      <button type="button" class="ll-cta btn-submit" (click)="onSubmit()" [disabled]="isLoading">
+        {{ isLoading ? 'Saving…' : isEditMode ? 'Update address' : 'Add address' }}
+      </button>
+    </div>
+  </form>
+</ng-template>

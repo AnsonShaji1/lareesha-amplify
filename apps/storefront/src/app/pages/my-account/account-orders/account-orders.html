@@ -1,0 +1,110 @@
+<div class="orders-page">
+  <header class="page-header">
+    <h1>Orders</h1>
+    <p class="page-description">Newest first. Open an order to see delivery and payment.</p>
+  </header>
+
+  <div class="orders-toolbar">
+    <label class="orders-search">
+      <mat-icon aria-hidden="true">search</mat-icon>
+      <input
+        type="text"
+        placeholder="Search by order number or product"
+        [ngModel]="searchQuery"
+        (ngModelChange)="onSearch($event)"
+        aria-label="Search orders"
+      />
+    </label>
+    <button type="button" class="ll-cta orders-filters-btn" (click)="openMobileFilters()">
+      <mat-icon aria-hidden="true">tune</mat-icon>
+      Filters
+      @if (filterCount > 0) {
+        <span class="orders-filters-btn__count">{{ filterCount }}</span>
+      }
+    </button>
+  </div>
+
+  @if (isLoading) {
+    <p class="orders-state">Loading your orders…</p>
+  } @else if (filteredOrders.length === 0) {
+    <div class="orders-empty">
+      <h2>No orders found</h2>
+      @if (searchQuery) {
+        <p>Try a different order number or product name.</p>
+      } @else if (filterCount > 0) {
+        <p>No orders match these filters.</p>
+      } @else {
+        <p>You haven't placed an order yet.</p>
+        <a class="ll-cta ll-cta--primary" routerLink="/categories">Continue shopping</a>
+      }
+    </div>
+  } @else {
+    <div class="orders-list">
+      @for (order of filteredOrders; track order.id) {
+        <a class="order-row" [routerLink]="['/order', order.id]">
+          <div class="order-row__photos">
+            @for (item of previewItems(order); track item.id) {
+              <span class="order-row__photo">
+                @if (item.product_image) {
+                  <img [src]="item.product_image" [alt]="item.product_name" />
+                }
+              </span>
+            }
+            @if (extraItemCount(order) > 0) {
+              <span class="order-row__more">+{{ extraItemCount(order) }}</span>
+            }
+          </div>
+
+          <div class="order-row__body">
+            <p class="order-row__number">{{ order.order_number }}</p>
+            <p class="order-row__meta">{{ formatDate(order.created_at) }} · {{ pieceLabel(order) }}</p>
+            <div class="order-row__status">
+              <span class="order-pill" [ngClass]="'order-pill--' + getStatusInfo(order.status).color">
+                {{ getStatusInfo(order.status).label }}
+              </span>
+              @if (order.payment_status) {
+                <span
+                  class="order-pill"
+                  [ngClass]="'order-pill--' + getPaymentStatusInfo(order.payment_status).color"
+                >
+                  {{ getPaymentStatusInfo(order.payment_status).label }}
+                </span>
+              }
+            </div>
+          </div>
+
+          <p class="order-row__total">{{ formatRupees(order.total) }}</p>
+        </a>
+      }
+    </div>
+  }
+
+  <div
+    class="filters-drawer-overlay"
+    [class.active]="isMobileFiltersOpen"
+    (click)="closeMobileFilters()"
+    [attr.aria-hidden]="!isMobileFiltersOpen"
+  ></div>
+  <section
+    class="filters-drawer"
+    [class.open]="isMobileFiltersOpen"
+    role="dialog"
+    [attr.aria-modal]="isMobileFiltersOpen"
+    aria-label="Order filters"
+    [attr.aria-hidden]="!isMobileFiltersOpen"
+    (click)="$event.stopPropagation()"
+  >
+    <header class="filters-drawer-header">
+      <h2>Filters</h2>
+      <button type="button" class="filters-drawer-close" (click)="closeMobileFilters()" aria-label="Close filters">
+        <mat-icon aria-hidden="true">close</mat-icon>
+      </button>
+    </header>
+    <div class="filters-drawer-content">
+      <app-order-filters
+        [open]="isMobileFiltersOpen"
+        (filterChange)="onFilterChange($event)"
+      ></app-order-filters>
+    </div>
+  </section>
+</div>

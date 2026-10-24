@@ -1,0 +1,107 @@
+<div class="shop-page">
+  <div class="shop-page__mobile-bar">
+    <button
+      type="button"
+      class="shop-page__filter-btn"
+      (click)="toggleFilters()"
+      [attr.aria-expanded]="filtersOpen"
+    >
+      <mat-icon aria-hidden="true">tune</mat-icon>
+      <span>Filter</span>
+    </button>
+  </div>
+
+  @if (filtersOpen) {
+    <div class="shop-page__backdrop" (click)="closeFilters()"></div>
+  }
+
+  <aside class="shop-page__filters" [class.shop-page__filters--open]="filtersOpen">
+    <h2>Filters</h2>
+
+    <section class="shop-page__group">
+      <h3>Categories</h3>
+      <ul>
+        <li>
+          <button
+            type="button"
+            [class.is-selected]="selectedSlug === null"
+            (click)="selectCategory(null)"
+          >
+            All
+          </button>
+        </li>
+        @for (category of categories; track category.id) {
+          <li>
+            <button
+              type="button"
+              [class.is-selected]="selectedSlug === category.slug"
+              (click)="selectCategory(category.slug)"
+            >
+              {{ categoryLabel(category.name) }}
+            </button>
+          </li>
+        }
+      </ul>
+    </section>
+
+    <section class="shop-page__group">
+      <h3>Price</h3>
+      <div class="shop-page__limits">
+        <span>₹{{ MIN_PRICE }}</span>
+        <span>₹{{ MAX_PRICE }}</span>
+      </div>
+      <mat-slider [min]="MIN_PRICE" [max]="MAX_PRICE" class="shop-page__slider">
+        <input
+          matSliderStartThumb
+          [(ngModel)]="minPrice"
+          (dragEnd)="onPriceSettled()"
+          aria-label="Minimum price"
+        />
+        <input
+          matSliderEndThumb
+          [(ngModel)]="maxPrice"
+          (dragEnd)="onPriceSettled()"
+          aria-label="Maximum price"
+        />
+      </mat-slider>
+      <p class="shop-page__range">₹{{ minPrice }} – ₹{{ maxPrice }}</p>
+    </section>
+  </aside>
+
+  <section class="shop-page__results">
+    @if (showingLabel()) {
+      <p class="shop-page__count">{{ showingLabel() }}</p>
+    }
+
+    <div class="shop-page__sort" role="group" aria-label="Sort by">
+      <span>Sort by</span>
+      <button type="button" [class.is-selected]="sort === 'newest'" (click)="setSort('newest')">
+        Newest first
+      </button>
+      <button
+        type="button"
+        [class.is-selected]="sort === 'low-to-high'"
+        (click)="setSort('low-to-high')"
+      >
+        Price: Low to High
+      </button>
+      <button
+        type="button"
+        [class.is-selected]="sort === 'high-to-low'"
+        (click)="setSort('high-to-low')"
+      >
+        Price: High to Low
+      </button>
+    </div>
+
+    <app-product-grid
+      [products]="products"
+      [gridColumns]="3"
+      [totalCount]="totalCount"
+      [hasMore]="hasMore"
+      [isLoading]="isLoading"
+      (productClick)="openProduct($event)"
+      (loadMore)="loadMore()"
+    />
+  </section>
+</div>

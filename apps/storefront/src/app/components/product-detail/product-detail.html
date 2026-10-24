@@ -1,0 +1,117 @@
+<div class="detail-overlay" [class.active]="isOpen" (click)="close()">
+  @if (product) {
+    <div class="detail-container" (click)="$event.stopPropagation()">
+      <!-- Close Button -->
+      <button mat-icon-button class="close-btn" (click)="close()" aria-label="Close">
+        <mat-icon>close</mat-icon>
+      </button>
+
+      <!-- Product Detail Content -->
+      <div class="detail-content">
+        <!-- Image Section -->
+        <div class="image-section">
+          <div class="main-image">
+            <img [src]="currentImage" [alt]="product.name" />
+          </div>
+
+          @if (product.images && product.images.length > 1) {
+            <div class="image-thumbnails">
+              @for (image of product.images; track image; let i = $index) {
+                <button
+                  class="thumbnail"
+                  [class.active]="currentImage === image"
+                  (click)="selectImage(image)"
+                  [attr.aria-label]="'Image ' + (i + 1)"
+                >
+                  <img [src]="image" [alt]="product.name" />
+                </button>
+              }
+            </div>
+          }
+        </div>
+
+        <!-- Info Section -->
+        <div class="info-section">
+          <div class="product-header">
+            <h1>{{ product.name }}</h1>
+
+            <div class="price-wrapper">
+              @if (product.salePrice && product.salePrice < product.originalPrice) {
+                <span class="sale-price">${{ product.salePrice }}</span>
+                <span class="original-price strikethrough">${{ product.originalPrice }}</span>
+              } @else {
+                <span class="sale-price">${{ product.salePrice || product.originalPrice }}</span>
+              }
+            </div>
+          </div>
+
+          @if (product.description) {
+            <div class="product-description">
+              <p>{{ product.description }}</p>
+            </div>
+          }
+
+          <div class="product-details">
+            <div class="detail-item">
+              <span class="label">CATEGORY:</span>
+              <span class="value">{{ product.category.name }}</span>
+            </div>
+          </div>
+
+          <!-- Quantity Selector -->
+          <div class="quantity-selector">
+            <label>QUANTITY</label>
+            <div class="quantity-controls">
+              <button
+                (click)="decreaseQuantity()"
+                [disabled]="quantity <= 1 || product.availableStock === 0"
+              >
+                <mat-icon>remove</mat-icon>
+              </button>
+              <span class="quantity-value">{{ quantity }}</span>
+              <button
+                (click)="increaseQuantity()"
+                [disabled]="
+                  quantity >= product.availableStock || product.availableStock === 0
+                "
+              >
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+
+            @if (product.availableStock > 0 && product.availableStock <= 5) {
+              <p class="stock-warning">Only {{ product.availableStock }} left in stock</p>
+            }
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="actions">
+            <button
+              class="btn-add-to-cart"
+              (click)="addToCart()"
+              [disabled]="product.availableStock === 0"
+            >
+              <mat-icon>shopping_bag</mat-icon>
+              {{ product.availableStock > 0 ? 'ADD TO CART' : 'OUT OF STOCK' }}
+            </button>
+            <button class="btn-wishlist" (click)="toggleWishlist()">
+              <mat-icon>{{ isInWishlist ? 'favorite' : 'favorite_border' }}</mat-icon>
+            </button>
+          </div>
+
+          <!-- Shipping Info -->
+          <div class="shipping-info">
+            <div class="info-item">
+              <mat-icon>local_shipping</mat-icon>
+              <span>Free shipping on orders over $150</span>
+            </div>
+            <div class="info-item">
+              <mat-icon>autorenew</mat-icon>
+              <span>Free returns within 30 days</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>

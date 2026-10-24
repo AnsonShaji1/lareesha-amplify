@@ -1,0 +1,243 @@
+@if (loading()) {
+  <div class="product-detail-page product-detail-page--loading">
+    <div class="detail-wrapper">
+      <div class="detail-content detail-content--skeleton">
+        <div class="image-section">
+          <div class="main-image-wrapper skeleton-block"></div>
+        </div>
+        <div class="info-section skeleton-info">
+          <div class="skeleton-line skeleton-line--title"></div>
+          <div class="skeleton-line skeleton-line--price"></div>
+          <div class="skeleton-line skeleton-line--full"></div>
+          <div class="skeleton-line skeleton-line--full"></div>
+          <div class="skeleton-line skeleton-line--short"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+} @else if (loadError()) {
+  <div class="product-detail-page product-detail-page--error">
+    <p>We couldn’t load this piece. Please try again.</p>
+    <button type="button" class="ll-cta ll-cta--primary" (click)="goBack()">Back to categories</button>
+  </div>
+} @else if (product) {
+  <div class="product-detail-page">
+    <div class="detail-wrapper">
+      <div class="detail-content">
+        <div class="image-section">
+          <div class="image-gallery" [class.has-thumbnails]="product.images && product.images.length > 1">
+            <div class="main-stage">
+              <div
+                class="main-image-wrapper"
+                [class.main-image-wrapper--enlargeable]="!!currentImageSrc()"
+                (click)="onMainTap($event)"
+              >
+                @if (currentImageSrc()) {
+                  <img
+                    [src]="currentImageSrc()"
+                    [alt]="product.name"
+                    loading="eager"
+                    decoding="async"
+                    fetchpriority="high"
+                    class="main-image"
+                    [class.main-image--visible]="imageReveal()"
+                  />
+                }
+                @if (product.availableStock === 0) {
+                  <div class="out-of-stock-overlay">OUT OF STOCK</div>
+                }
+                @if (currentImageSrc()) {
+                  <button
+                    type="button"
+                    class="zoom-expand-btn"
+                    (click)="openGallery(); $event.stopPropagation()"
+                    aria-label="Enlarge image"
+                  >
+                    <mat-icon>zoom_out_map</mat-icon>
+                  </button>
+                }
+              </div>
+              @if (currentImageSrc()) {
+                <p class="image-zoom-hint">
+                  @if (isDesktop()) {
+                    Click to enlarge
+                  } @else {
+                    Tap to enlarge
+                  }
+                </p>
+              }
+            </div>
+
+            @if (product.images && product.images.length > 1) {
+              <div class="thumbnail-rail" role="tablist" aria-label="Product images">
+                @for (image of product.images; track $index; let idx = $index) {
+                  <button
+                    type="button"
+                    class="thumbnail-btn"
+                    role="tab"
+                    [class.active]="currentImageSrc() === image"
+                    [attr.aria-selected]="currentImageSrc() === image"
+                    [attr.aria-label]="'Image ' + (idx + 1) + ' of ' + product.images!.length"
+                    (click)="selectImage(image, idx)"
+                  >
+                    <span class="thumbnail-frame">
+                      <img [src]="image" alt="" loading="lazy" decoding="async" />
+                    </span>
+                  </button>
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+        <div class="info-section">
+          <div class="product-header">
+            <h1 class="product-title">{{ product.name }}</h1>
+            <div class="price-wrapper">
+              @if (hasDiscount(product)) {
+                <span class="sale-price">₹{{ product.salePrice }}</span>
+                <span class="original-price strikethrough">₹{{ product.originalPrice }}</span>
+              } @else {
+                <span class="sale-price">₹{{ primaryPrice(product) }}</span>
+              }
+            </div>
+          </div>
+
+          @if (product.description) {
+            <div class="product-description">
+              <p>{{ product.description }}</p>
+            </div>
+          }
+
+          <div class="product-details">
+            @if (product.productCode) {
+              <div class="detail-item">
+                <span class="label">Code</span>
+                <span class="value">{{ product.productCode }}</span>
+              </div>
+            }
+            <div class="detail-item">
+              <span class="label">Category</span>
+              <span class="value">{{ product.category.name }}</span>
+            </div>
+          </div>
+
+          <div class="quantity-selector">
+            <label>Quantity</label>
+            <div class="quantity-controls">
+              <button
+                type="button"
+                (click)="decreaseQuantity()"
+                [disabled]="quantity <= 1 || product.availableStock === 0"
+                aria-label="Decrease quantity"
+              >
+                −
+              </button>
+              <span class="quantity-value">{{ quantity }}</span>
+              <button
+                type="button"
+                (click)="increaseQuantity()"
+                [disabled]="quantity >= remainingAddable() || product.availableStock === 0"
+                aria-label="Increase quantity"
+              >
+                +
+              </button>
+            </div>
+            @if (product.availableStock > 0 && product.availableStock <= 5) {
+              <p class="stock-warning">Only {{ product.availableStock }} left in stock</p>
+            }
+          </div>
+
+          <div class="actions">
+            <button
+              type="button"
+              class="ll-cta ll-cta--primary btn-add-to-cart"
+              (click)="addToCart()"
+              [disabled]="!canAddToCart()"
+            >
+              {{ canAddToCart() ? 'Add to cart' : 'Out of stock' }}
+            </button>
+            <button
+              type="button"
+              class="btn-wishlist"
+              (click)="toggleWishlist()"
+              [class.active]="isInWishlist"
+              [attr.aria-pressed]="isInWishlist"
+              aria-label="Add to wishlist"
+            >
+              <mat-icon>{{ isInWishlist ? 'favorite' : 'favorite_border' }}</mat-icon>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  @if (galleryOpen() && product) {
+    <div
+      class="gallery-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Product gallery"
+      (click)="closeGallery()"
+    >
+      <button
+        type="button"
+        class="gallery-modal-close"
+        (click)="closeGallery(); $event.stopPropagation()"
+        aria-label="Close gallery"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+      <div class="gallery-modal-header" (click)="$event.stopPropagation()">
+        <span>Gallery</span>
+      </div>
+      <div
+        class="gallery-modal-body"
+        [class.gallery-modal-body--zoomed]="modalZoom() > 1.05"
+        (click)="$event.stopPropagation()"
+        (touchstart)="onModalTouchStart($event)"
+        (touchend)="onModalTouchEnd($event)"
+        (dblclick)="onModalDblClick($event)"
+        (mousedown)="onModalMouseDown($event)"
+      >
+        <img
+          [src]="modalImage()"
+          [alt]="product.name"
+          [style.transform]="modalTransform()"
+        />
+      </div>
+      @if (product.images && product.images.length > 1) {
+        <div class="gallery-modal-nav" (click)="$event.stopPropagation()">
+          <button type="button" (click)="modalPrev(); $event.stopPropagation()" aria-label="Previous image">
+            <mat-icon>chevron_left</mat-icon>
+          </button>
+          <span>{{ modalIndex() + 1 }} / {{ product.images.length }}</span>
+          <button type="button" (click)="modalNext(); $event.stopPropagation()" aria-label="Next image">
+            <mat-icon>chevron_right</mat-icon>
+          </button>
+        </div>
+      }
+      <p class="gallery-modal-hint" (click)="$event.stopPropagation()">
+        @if (isDesktop()) {
+          Arrow keys to browse · Scroll or double-click to zoom · Esc to close
+        } @else {
+          Swipe to browse · Double-tap or pinch to zoom · Tap ✕ to close
+        }
+      </p>
+      @if (product.images && product.images.length > 1) {
+        <div class="gallery-modal-thumbs" (click)="$event.stopPropagation()">
+          @for (image of product.images; track $index; let idx = $index) {
+            <button
+              type="button"
+              [class.active]="modalIndex() === idx"
+              (click)="pickModalThumb(idx, image)"
+            >
+              <img [src]="image" alt="" loading="lazy" />
+            </button>
+          }
+        </div>
+      }
+    </div>
+  }
+}
