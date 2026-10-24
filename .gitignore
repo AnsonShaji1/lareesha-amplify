@@ -1,6 +1,7 @@
 node_modules
 .npm
 dist
+dist-hosting
 .angular
 .amplify
 amplify_outputs*
