@@ -1,5 +1,5 @@
-import { copyFileSync, existsSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { copyFileSync, existsSync, mkdirSync } from 'node:fs';
+import { dirname, resolve } from 'node:path';
 
 const source = resolve('amplify_outputs.json');
 if (!existsSync(source)) {
@@ -11,6 +11,8 @@ for (const dest of [
   'apps/storefront/src/environments/amplify_outputs.json',
   'apps/admin/src/environments/amplify_outputs.json',
 ]) {
-  copyFileSync(source, resolve(dest));
+  const destPath = resolve(dest);
+  mkdirSync(dirname(destPath), { recursive: true });
+  copyFileSync(source, destPath);
   console.log('Copied to', dest);
 }
