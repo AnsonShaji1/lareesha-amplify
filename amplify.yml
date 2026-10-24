@@ -12,6 +12,8 @@ frontend:
         - npm install --cache .npm --prefer-offline
     build:
       commands:
+        - npx ampx generate outputs --branch $AWS_BRANCH --app-id $AWS_APP_ID
+        - npm run sync-outputs
         - npm run build:storefront
   artifacts:
     baseDirectory: apps/storefront/dist/lareesha-luxe/browser
