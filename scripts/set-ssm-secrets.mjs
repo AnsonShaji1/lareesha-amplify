@@ -21,6 +21,10 @@ const corsOrigins = [
   'http://localhost:4201',
   'http://127.0.0.1:4200',
   'http://127.0.0.1:4201',
+  'https://lareeshaluxe.com',
+  'https://www.lareeshaluxe.com',
+  'https://api.lareeshaluxe.com',
+  'https://master.d2ditwsuelgj89.amplifyapp.com',
 ];
 const corsConfig = {
   CORSRules: [
@@ -120,7 +124,7 @@ function applyR2Cors() {
     console.error(result.stderr || result.stdout);
     return false;
   }
-  console.log(`Set R2 CORS on ${bucket} for local admin/storefront.`);
+  console.log(`Set R2 CORS on ${bucket} for ${corsOrigins.join(', ')}`);
   return true;
 }
 

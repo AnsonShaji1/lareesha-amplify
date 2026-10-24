@@ -1,0 +1,19 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm install --cache .npm --prefer-offline
+    build:
+      commands:
+        - npx ampx generate outputs --branch $AWS_BRANCH --app-id d2ditwsuelgj89
+        - npm run sync-outputs
+        - npm run build:admin
+  artifacts:
+    baseDirectory: apps/admin/dist/admin/browser
+    files:
+      - '**/*'
+  cache:
+    paths:
+      - .npm/**/*
+      - node_modules/**/*
