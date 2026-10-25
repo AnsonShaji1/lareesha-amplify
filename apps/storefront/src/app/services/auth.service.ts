@@ -328,8 +328,13 @@ export class AuthService {
 
   private async startGoogleSignIn(): Promise<AuthResponse> {
     this.markWelcomeToastPending();
+    const googleRedirect = {
+      provider: 'Google' as const,
+      // Forces Google account chooser (needs Cognito Managed login branding).
+      options: { prompt: 'SELECT_ACCOUNT' as const },
+    };
     try {
-      await signInWithRedirect({ provider: 'Google' });
+      await signInWithRedirect(googleRedirect);
       return {};
     } catch (error: unknown) {
       if ((error as { name?: string })?.name !== 'UserAlreadyAuthenticatedException') {
@@ -338,7 +343,7 @@ export class AuthService {
       }
       await signOut();
       this.markWelcomeToastPending();
-      await signInWithRedirect({ provider: 'Google' });
+      await signInWithRedirect(googleRedirect);
       return {};
     }
   }
