@@ -25,6 +25,7 @@ const corsOrigins = [
   'https://www.lareeshaluxe.com',
   'https://api.lareeshaluxe.com',
   'https://master.d2ditwsuelgj89.amplifyapp.com',
+  'https://master.d2v6fxgu3vlf00.amplifyapp.com',
 ];
 const corsConfig = {
   CORSRules: [
