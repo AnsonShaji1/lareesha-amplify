@@ -365,14 +365,7 @@ export class ApiService {
     let result: { data: any[]; nextToken?: string | null } = { data: [] };
 
     if (params.search) {
-      const term = params.search.trim();
-      result = await publicClient.models.Product.list({
-        limit,
-        nextToken: token,
-        filter: {
-          or: [{ name: { contains: term } }, { productCode: { contains: term.toUpperCase() } }],
-        },
-      });
+      result = await this.searchProducts(params.search.trim(), limit, token);
     } else if (params.priceSort === 'low-to-high' || params.priceSort === 'high-to-low') {
       result = await this.listByPrice(params, limit, token);
     } else if (params.newIn) {
@@ -415,6 +408,49 @@ export class ApiService {
       items: await applyAvailability((result.data || []).map(mapProduct)),
       nextToken: result.nextToken || null,
     };
+  }
+
+  /**
+   * DynamoDB applies `limit` before `filter`, so a single page of 25 can miss
+   * matches later in the table (e.g. LX-230). Keep scanning until we fill the
+   * UI page size or run out of items.
+   */
+  private async searchProducts(
+    term: string,
+    pageSize: number,
+    startToken?: string,
+  ): Promise<{ data: any[]; nextToken?: string | null }> {
+    const code = term.toUpperCase();
+    const filter = {
+      or: [
+        { name: { contains: term } },
+        { productCode: { eq: code } },
+        { productCode: { contains: code } },
+      ],
+    };
+    const scanPageSize = 100;
+    const maxPages = 40;
+    const matched: any[] = [];
+    let nextToken: string | null | undefined = startToken || undefined;
+    let pages = 0;
+
+    while (matched.length < pageSize && pages < maxPages) {
+      const page: { data?: any[] | null; nextToken?: string | null } =
+        await publicClient.models.Product.list({
+          limit: scanPageSize,
+          nextToken: nextToken || undefined,
+          filter,
+        });
+      pages += 1;
+      for (const row of page.data || []) {
+        matched.push(row);
+        if (matched.length >= pageSize) break;
+      }
+      nextToken = page.nextToken || null;
+      if (!nextToken) break;
+    }
+
+    return { data: matched.slice(0, pageSize), nextToken: nextToken || null };
   }
 
   private async listByPrice(
