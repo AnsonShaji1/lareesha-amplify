@@ -33,7 +33,6 @@ export class CheckoutPage implements OnInit, OnDestroy {
   private totalsRequestId = 0;
   private totalsKey = '';
   private addressesLoaded = false;
-  shippingZone: string | null = null;
   orderPlaced = false;
   orderNumber = '';
   orderId: string | null = null;
@@ -266,7 +265,7 @@ export class CheckoutPage implements OnInit, OnDestroy {
   }
 
   calculateTotals(addressId?: string) {
-    // Calculate totals using destination-aware shipping from backend rules
+    // Totals include flat store shipping from the Shipping settings row.
     const shippingAddressId = addressId ?? this.selectedAddressId ?? undefined;
     const requestId = ++this.totalsRequestId;
     this.apiService.calculateTotals(shippingAddressId).subscribe({
@@ -278,7 +277,6 @@ export class CheckoutPage implements OnInit, OnDestroy {
           tax: Number(response.tax) || 0,
           shipping: pending ? 0 : Number(response.shipping) || 0,
           pending,
-          zone: response.shipping_zone ?? null,
         });
       },
       error: (error: any) => {
@@ -286,13 +284,11 @@ export class CheckoutPage implements OnInit, OnDestroy {
         this.totalsKey = '';
         console.error('Error calculating totals:', error);
         if (!shippingAddressId) {
-          // No pincode yet — do not invent a flat shipping fee or tax it.
           this.applyDisplayedTotals({
             subtotal: this.cartService.getTotal(),
             tax: this.estimateMerchandiseTax(),
             shipping: 0,
             pending: true,
-            zone: null,
           });
           return;
         }
@@ -307,12 +303,10 @@ export class CheckoutPage implements OnInit, OnDestroy {
     tax: number;
     shipping: number;
     pending: boolean;
-    zone: string | null;
   }) {
     this.subtotal = this.roundMoney(parts.subtotal);
     this.tax = this.roundMoney(parts.tax);
     this.shippingPendingAddress = parts.pending;
-    this.shippingZone = parts.zone;
     this.shipping = parts.pending ? 0 : this.roundMoney(parts.shipping);
     this.total = this.roundMoney(this.subtotal + this.shipping + this.tax);
   }

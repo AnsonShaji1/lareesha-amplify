@@ -35,21 +35,52 @@
 .wishlist-empty {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 72px 28px 96px;
-  text-align: left;
+  padding: 24px 28px 96px;
+}
+
+.wishlist-empty__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 40px 24px;
+  text-align: center;
+  background: var(--ll-surface);
+  border: 1px solid var(--ll-border);
+  border-radius: var(--ll-radius-md);
 
   h2 {
-    margin: 0;
-    font-family: var(--ll-font-display);
+    margin: 16px 0 0;
+    font-family: var(--ll-font-body);
     font-size: var(--ll-text-product);
-    font-weight: var(--ll-display-weight);
+    font-weight: var(--ll-weight-medium);
     color: var(--ll-text);
   }
 
   p {
     margin: 8px 0 24px;
+    max-width: 360px;
     color: var(--ll-muted);
-    font-size: var(--ll-text-md);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}
+
+.wishlist-empty__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--ll-gold-soft);
+  color: var(--ll-logo);
+
+  mat-icon {
+    width: 26px;
+    height: 26px;
+    font-size: 26px;
   }
 }
 
@@ -112,10 +143,11 @@
   width: 36px;
   height: 36px;
   padding: 0;
-  border: 1px solid rgba(246, 241, 232, 0.45);
+  border: 1px solid var(--ll-border-strong);
   border-radius: 50%;
-  background: rgba(12, 12, 12, 0.55);
+  background: var(--ll-surface);
   color: var(--ll-text);
+  box-shadow: var(--ll-shadow-sm);
   cursor: pointer;
 
   mat-icon {

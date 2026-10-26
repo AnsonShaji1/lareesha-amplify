@@ -1,13 +1,17 @@
 /**
- * Seed shipping zones after `npx ampx sandbox` has written amplify_outputs.json.
- * Uses the AppSync API with an admin user token passed as AMPLIFY_ADMIN_ID_TOKEN.
+ * Create or update the single Shipping settings row (id=default).
+ * Requires amplify_outputs.json and AMPLIFY_ADMIN_ID_TOKEN (admin Cognito ID token).
+ *
+ * Example:
+ *   AMPLIFY_ADMIN_ID_TOKEN=... node scripts/seed-shipping.mjs
+ *   AMPLIFY_ADMIN_ID_TOKEN=... node scripts/seed-shipping.mjs --free
+ *   AMPLIFY_ADMIN_ID_TOKEN=... node scripts/seed-shipping.mjs --fee 60
  */
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 
 const outputs = JSON.parse(readFileSync(resolve('amplify_outputs.json'), 'utf8'));
 const endpoint = outputs.data.url;
-const apiKey = outputs.data.api_key;
 const token = process.env.AMPLIFY_ADMIN_ID_TOKEN;
 
 if (!token) {
@@ -15,95 +19,62 @@ if (!token) {
   process.exit(1);
 }
 
+const args = process.argv.slice(2);
+const free = args.includes('--free');
+const feeIdx = args.indexOf('--fee');
+const feeRupees = feeIdx >= 0 ? Number(args[feeIdx + 1]) : 60;
+if (!free && (!Number.isFinite(feeRupees) || feeRupees < 0)) {
+  console.error('Pass --free or --fee <rupees>');
+  process.exit(1);
+}
+
+const feePaise = free ? 0 : Math.round(feeRupees * 100);
 const now = new Date().toISOString();
 
-const zones = [
-  {
-    name: 'Local Ernakulam',
-    code: 'local-ernakulam',
-    baseFeePaise: 6000,
-    freeShippingMinOrderPaise: 250000,
-    priority: 10,
-    isActive: true,
-    isFallback: false,
-    prefixes: ['682', '683'],
-  },
-  {
-    name: 'Kerala Non-Local',
-    code: 'kerala-non-local',
-    baseFeePaise: 12000,
-    freeShippingMinOrderPaise: 350000,
-    priority: 20,
-    isActive: true,
-    isFallback: false,
-    prefixes: [
-      '670', '671', '672', '673', '674', '675', '676', '677', '678', '679',
-      '680', '681', '684', '685', '686', '690', '691', '695',
-    ],
-  },
-  {
-    name: 'National Fallback',
-    code: 'national-fallback',
-    baseFeePaise: 18000,
-    freeShippingMinOrderPaise: 500000,
-    priority: 999,
-    isActive: true,
-    isFallback: true,
-    prefixes: [],
-  },
-];
-
-async function graphql(query, variables) {
-  const response = await fetch(endpoint, {
+async function gql(query, variables) {
+  const res = await fetch(endpoint, {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
-      authorization: token,
-      'x-api-key': apiKey,
+      Authorization: token,
     },
     body: JSON.stringify({ query, variables }),
   });
-  const payload = await response.json();
-  if (payload.errors) {
-    throw new Error(JSON.stringify(payload.errors, null, 2));
+  const body = await res.json();
+  if (body.errors?.length) {
+    throw new Error(JSON.stringify(body.errors, null, 2));
   }
-  return payload.data;
+  return body.data;
 }
 
-for (const zone of zones) {
-  const created = await graphql(
-    `mutation CreateZone($input: CreateShippingZoneInput!) {
-      createShippingZone(input: $input) { id code name }
+const existing = await gql(
+  `query GetShipping($id: String!) {
+    getShipping(id: $id) { id isFreeShipping feePaise }
+  }`,
+  { id: 'default' },
+);
+
+const input = {
+  id: 'default',
+  isFreeShipping: free,
+  feePaise,
+  updatedAtIso: now,
+};
+
+if (existing.getShipping) {
+  await gql(
+    `mutation UpdateShipping($input: UpdateShippingInput!) {
+      updateShipping(input: $input) { id isFreeShipping feePaise }
     }`,
-    {
-      input: {
-        name: zone.name,
-        code: zone.code,
-        baseFeePaise: zone.baseFeePaise,
-        freeShippingMinOrderPaise: zone.freeShippingMinOrderPaise,
-        priority: zone.priority,
-        isActive: zone.isActive,
-        isFallback: zone.isFallback,
-        createdAtIso: now,
-      },
-    },
+    { input },
   );
-  const zoneId = created.createShippingZone.id;
-  console.log('Created zone', zone.code, zoneId);
-  for (const prefix of zone.prefixes) {
-    await graphql(
-      `mutation CreatePrefix($input: CreateShippingPinPrefixInput!) {
-        createShippingPinPrefix(input: $input) { prefix }
-      }`,
-      {
-        input: {
-          prefix,
-          zoneId,
-          zoneCode: zone.code,
-          createdAtIso: now,
-        },
-      },
-    );
-    console.log('  prefix', prefix);
-  }
+  console.log('Updated Shipping default:', input);
+} else {
+  await gql(
+    `mutation CreateShipping($input: CreateShippingInput!) {
+      createShipping(input: $input) { id isFreeShipping feePaise }
+    }`,
+    { input },
+  );
+  console.log('Created Shipping default:', input);
 }

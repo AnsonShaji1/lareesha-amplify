@@ -1,14 +1,19 @@
 <div class="wishlist-page">
   <div class="page-header">
-    <h1>Wishlist</h1>
+    <h1>My wishlist</h1>
     <p class="page-description">{{ summary }}</p>
   </div>
 
   @if (items.length === 0) {
     <div class="wishlist-empty">
-      <h2>Your wishlist is empty</h2>
-      <p>Save pieces you want to come back to.</p>
-      <a class="ll-cta ll-cta--primary" routerLink="/categories">Continue shopping</a>
+      <div class="wishlist-empty__card">
+        <span class="wishlist-empty__icon" aria-hidden="true">
+          <mat-icon>favorite_border</mat-icon>
+        </span>
+        <h2>Your wishlist is empty</h2>
+        <p>Tap the heart on any piece to save it here and come back to it later.</p>
+        <a class="ll-cta ll-cta--primary" routerLink="/categories">Browse jewellery</a>
+      </div>
     </div>
   } @else {
     <div class="wishlist-grid">
@@ -26,7 +31,7 @@
             (click)="remove(product)"
             aria-label="Remove from wishlist"
           >
-            <mat-icon>close</mat-icon>
+            <mat-icon aria-hidden="true">close</mat-icon>
           </button>
 
           <div class="wishlist-tile__info">

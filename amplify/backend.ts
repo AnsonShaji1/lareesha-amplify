@@ -14,7 +14,6 @@ import { createOrder } from './functions/create-order/resource';
 import { verifyPayment } from './functions/verify-payment/resource';
 import { paymentFailed } from './functions/payment-failed/resource';
 import { calculateCheckoutTotals } from './functions/calculate-checkout-totals/resource';
-import { shippingQuote } from './functions/shipping-quote/resource';
 import { validatePincode } from './functions/validate-pincode/resource';
 import { getHomepage } from './functions/get-homepage/resource';
 import { productAvailability } from './functions/product-availability/resource';
@@ -35,7 +34,6 @@ const backend = defineBackend({
   verifyPayment,
   paymentFailed,
   calculateCheckoutTotals,
-  shippingQuote,
   validatePincode,
   getHomepage,
   productAvailability,
@@ -102,8 +100,7 @@ const tableMap: Record<string, string> = {
   ORDER_TABLE: 'Order',
   PAYMENT_TRANSACTION_TABLE: 'PaymentTransaction',
   STOCK_RESERVATION_TABLE: 'StockReservation',
-  SHIPPING_ZONE_TABLE: 'ShippingZone',
-  SHIPPING_PIN_PREFIX_TABLE: 'ShippingPinPrefix',
+  SHIPPING_TABLE: 'Shipping',
   CATALOG_SEED_JOB_TABLE: 'CatalogSeedJob',
   SEQUENCE_TABLE: 'Sequence',
 };
@@ -113,7 +110,6 @@ const functions = [
   backend.verifyPayment,
   backend.paymentFailed,
   backend.calculateCheckoutTotals,
-  backend.shippingQuote,
   backend.validatePincode,
   backend.getHomepage,
   backend.productAvailability,

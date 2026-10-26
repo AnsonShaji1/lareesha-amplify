@@ -153,6 +153,14 @@ export class AccountOrdersComponent implements OnInit, OnDestroy {
     return Math.max(0, order.items.length - 3);
   }
 
+  itemSummary(order: Order): string {
+    const [first, ...rest] = order.items;
+    if (!first) return 'No items';
+    return rest.length === 0
+      ? first.product_name
+      : `${first.product_name} + ${rest.length} more ${rest.length === 1 ? 'item' : 'items'}`;
+  }
+
   pieceLabel(order: Order): string {
     const count = order.items.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0);
     return count === 1 ? '1 piece' : `${count} pieces`;

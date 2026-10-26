@@ -141,8 +141,6 @@ def handler(event, context):
                     "priceKey": LISTING_KEY,
                     "noOfStock": int(product_data.get("no_of_stock") or 0),
                     "taxPercentageBps": money.tax_bps_from_percent(product_data.get("tax_percentage") or 0),
-                    "isFreeShippingEligible": bool(product_data.get("is_free_shipping_eligible", True)),
-                    "shippingCostPaise": money.rupees_to_paise(product_data.get("shipping_cost") or 0),
                     "images": images,
                     "createdAtIso": dynamo.now_iso(),
                 },

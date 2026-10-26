@@ -160,7 +160,7 @@ $carousel-duration: 0.6s;
   }
 
   .home-product-carousel__title-row .home-section__title {
-    font-size: clamp(1.25rem, 3vw + 0.7rem, 1.5rem);
+    font-size: var(--ll-text-section);
     line-height: 1.2;
   }
 

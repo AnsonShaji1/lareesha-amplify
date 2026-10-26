@@ -114,7 +114,6 @@ export interface CalculateTotalsResponse {
   tax: number;
   total: number;
   shipping_pending_address?: boolean;
-  shipping_zone?: string | null;
 }
 
 function paiseToRupees(paise?: number | null): number {
@@ -793,7 +792,6 @@ export class ApiService {
           tax: paiseToRupees(row.taxPaise),
           total: paiseToRupees(row.totalPaise),
           shipping_pending_address: !!row.shippingPendingAddress,
-          shipping_zone: row.shippingZone ?? null,
         };
       }),
     );

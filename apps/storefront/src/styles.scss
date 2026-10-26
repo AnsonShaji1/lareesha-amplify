@@ -55,7 +55,9 @@ $my-theme: mat.m2-define-light-theme((
 
 :root {
   --ll-font-body: 'Roboto', 'Helvetica Neue', sans-serif;
-  --ll-font-display: 'Times New Roman', Times, serif;
+  /* Headings use the same sans as the body; only the header/footer wordmark keeps the serif */
+  --ll-font-display: var(--ll-font-body);
+  --ll-font-brand: 'Times New Roman', Times, serif;
 
   /* Font weights — must match index.html Google Fonts weights */
   --ll-weight-light: 300;
@@ -113,18 +115,19 @@ $my-theme: mat.m2-define-light-theme((
   --ll-text-price: 15px;
   --ll-text-md: 16px;
   --ll-text-lg: 18px;
-  --ll-text-product: 22px;
-  --ll-text-section: 2rem;
-  --ll-text-page: 2.5rem;
+  --ll-text-product: 18px;
+  --ll-text-section: 1.125rem;
+  --ll-text-page: 1.125rem;
   --ll-text-xl: var(--ll-text-page);
   --ll-text-2xl: clamp(3.5rem, 2.2rem + 2vw, 4.5rem);
 }
 
 @media (max-width: 600px) {
   :root {
-    --ll-text-page: 2rem;
+    --ll-text-section: 1rem;
+    --ll-text-page: 1rem;
     --ll-text-xl: var(--ll-text-page);
-    --ll-text-product: 20px;
+    --ll-text-product: 16px;
     --ll-text-2xl: 2.5rem;
     --ll-display-line-height: 1.15;
     --ll-display-letter-spacing: 0.02em;

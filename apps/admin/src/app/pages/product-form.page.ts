@@ -76,18 +76,11 @@ import {
       </fieldset>
 
       <fieldset class="module">
-        <h2>Tax and shipping</h2>
-        <div class="grid">
-          <label class="field">Tax percentage
-            <input type="number" min="0" step="0.01" [(ngModel)]="form.taxPercent" name="tax" />
-          </label>
-          <label class="field">Shipping cost (₹)
-            <input type="number" min="0" step="0.01" [(ngModel)]="form.shippingRupees" name="shipping" [disabled]="form.freeShipping" />
-          </label>
-        </div>
-        <label class="check">
-          <input type="checkbox" [(ngModel)]="form.freeShipping" name="free" /> Free shipping eligible
+        <h2>Tax</h2>
+        <label class="field">Tax percentage
+          <input type="number" min="0" step="0.01" [(ngModel)]="form.taxPercent" name="tax" />
         </label>
+        <p class="quiet">Store shipping is set under Shipping, not per product.</p>
       </fieldset>
 
       <fieldset class="module">
@@ -145,8 +138,6 @@ export class ProductFormPage {
     saleRupees: '0',
     stock: '0',
     taxPercent: '0',
-    shippingRupees: '0',
-    freeShipping: true,
   };
 
   constructor() {
@@ -207,8 +198,6 @@ export class ProductFormPage {
         priceKey: 'ALL',
         noOfStock: Number(this.form.stock || 0),
         taxPercentageBps: Math.round(Number(this.form.taxPercent || 0) * 100),
-        isFreeShippingEligible: this.form.freeShipping,
-        shippingCostPaise: this.form.freeShipping ? 0 : toPaise(this.form.shippingRupees),
       };
       const images = serializeImages(this.images());
       if (images) payload['images'] = images;
@@ -277,8 +266,6 @@ export class ProductFormPage {
       saleRupees: fromPaise(row.salePricePaise),
       stock: String(row.noOfStock ?? 0),
       taxPercent: String((row.taxPercentageBps || 0) / 100),
-      shippingRupees: fromPaise(row.shippingCostPaise),
-      freeShipping: row.isFreeShippingEligible !== false,
     };
     this.productCode.set(row.productCode || '');
     this.images.set(parseImages(row.images));

@@ -1,18 +1,25 @@
 <div class="cart-page">
   <div class="page-header">
-    <h1>Cart</h1>
+    <h1>My cart</h1>
     <p class="page-description">{{ summary }}</p>
   </div>
 
   @if (items.length === 0) {
     <div class="cart-empty">
-      <h2>Your cart is empty</h2>
-      <p>Add pieces you want to take home.</p>
-      <a class="ll-cta ll-cta--primary" routerLink="/categories">Continue shopping</a>
+      <div class="cart-empty__card">
+        <span class="cart-empty__icon" aria-hidden="true">
+          <mat-icon>shopping_bag</mat-icon>
+        </span>
+        <h2>Your cart is empty</h2>
+        <p>Add pieces you love and they will wait for you here.</p>
+        <a class="ll-cta ll-cta--primary" routerLink="/categories">Browse jewellery</a>
+      </div>
     </div>
   } @else {
     <div class="cart-layout">
-      <div class="cart-list">
+      <section class="cart-card" aria-labelledby="cart-items-title">
+        <h2 id="cart-items-title" class="cart-card__title">Items in your cart</h2>
+        <div class="cart-list">
         @for (item of items; track item.product.id) {
           <article class="cart-item">
             <button type="button" class="cart-item__media" (click)="openProduct(item)">
@@ -23,9 +30,9 @@
               @if (item.product.productCode) {
                 <p class="cart-item__code">{{ item.product.productCode }}</p>
               }
-              <h2>
+              <h3>
                 <button type="button" (click)="openProduct(item)">{{ item.product.name }}</button>
-              </h2>
+              </h3>
               <p class="cart-item__unit">
                 <span>{{ formatRupees(lineTotal(item)) }}</span>
                 @if (item.quantity > 1) {
@@ -72,11 +79,15 @@
             </div>
           </article>
         }
-      </div>
+        </div>
+      </section>
 
-      <aside class="cart-summary">
-        <p class="cart-summary__label">Subtotal</p>
-        <p class="cart-summary__amount">{{ formatRupees(total) }}</p>
+      <aside class="cart-summary cart-card" aria-labelledby="cart-summary-title">
+        <h2 id="cart-summary-title" class="cart-card__title">Order summary</h2>
+        <div class="cart-summary__row">
+          <span class="cart-summary__label">Subtotal ({{ pieceCount }} {{ pieceCount === 1 ? 'piece' : 'pieces' }})</span>
+          <span class="cart-summary__amount">{{ formatRupees(total) }}</span>
+        </div>
         <p class="cart-summary__note">Shipping is calculated at checkout.</p>
         @if (errorMessage) {
           <p class="cart-summary__error">{{ errorMessage }}</p>

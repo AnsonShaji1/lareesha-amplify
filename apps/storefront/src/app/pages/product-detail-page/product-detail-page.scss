@@ -244,14 +244,14 @@
   font-family: var(--ll-font-body);
 
   h1.product-title {
-    font-family: var(--ll-font-display);
-    font-size: 36px;
-    font-weight: var(--ll-weight-light);
+    font-family: var(--ll-font-body);
+    font-size: 20px;
+    font-weight: var(--ll-weight-medium);
     font-style: normal;
     margin: 0 0 12px;
     padding: 0;
     color: var(--ll-logo);
-    letter-spacing: 1px;
+    letter-spacing: 0.02em;
     line-height: 1.2;
     font-synthesis: none;
     text-rendering: geometricPrecision;
@@ -295,7 +295,7 @@
 
 @media (max-width: 768px) {
   .product-header h1.product-title {
-    font-size: 28px;
+    font-size: 18px;
     margin-bottom: 10px;
   }
 }

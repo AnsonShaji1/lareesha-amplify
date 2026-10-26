@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { ApiService, Order } from '../../services/api.service';
 import { NotificationService } from '../../services/notification.service';
@@ -7,7 +8,7 @@ import { NotificationService } from '../../services/notification.service';
 @Component({
   selector: 'app-order-detail',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, MatIconModule],
   templateUrl: './order-detail.html',
   styleUrl: './order-detail.scss',
 })
@@ -61,6 +62,17 @@ export class OrderDetailComponent implements OnInit {
         this.router.navigate(['/account/orders']);
       },
     });
+  }
+
+  copyOrderNumber(orderNumber: string) {
+    if (!navigator.clipboard) {
+      this.notificationService.error('Copy is not supported in this browser');
+      return;
+    }
+    navigator.clipboard.writeText(orderNumber).then(
+      () => this.notificationService.success('Order number copied'),
+      () => this.notificationService.error('Could not copy order number'),
+    );
   }
 
   getStatusInfo(status: string) {

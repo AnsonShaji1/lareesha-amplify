@@ -3,7 +3,6 @@ import { createOrder } from '../functions/create-order/resource';
 import { verifyPayment } from '../functions/verify-payment/resource';
 import { paymentFailed } from '../functions/payment-failed/resource';
 import { calculateCheckoutTotals } from '../functions/calculate-checkout-totals/resource';
-import { shippingQuote } from '../functions/shipping-quote/resource';
 import { validatePincode } from '../functions/validate-pincode/resource';
 import { getHomepage } from '../functions/get-homepage/resource';
 import { productAvailability } from '../functions/product-availability/resource';
@@ -85,7 +84,6 @@ const schema = a.schema({
     taxPaise: a.integer().required(),
     totalPaise: a.integer().required(),
     shippingPendingAddress: a.boolean(),
-    shippingZone: a.string(),
     items: a.ref('CheckoutItem').array(),
   }),
 
@@ -102,17 +100,6 @@ const schema = a.schema({
     reservationExpiresAt: a.string(),
     status: a.string(),
     paymentStatus: a.string(),
-  }),
-
-  ShippingQuoteResult: a.customType({
-    zipCode: a.string().required(),
-    subtotalPaise: a.integer().required(),
-    shippingPaise: a.integer().required(),
-    zoneName: a.string(),
-    zoneCode: a.string(),
-    baseFeePaise: a.integer(),
-    freeShippingMinOrderPaise: a.integer(),
-    isFallback: a.boolean(),
   }),
 
   PostOffice: a.customType({
@@ -177,8 +164,6 @@ const schema = a.schema({
       priceKey: a.string().required(),
       noOfStock: a.integer().required(),
       taxPercentageBps: a.integer().required(),
-      isFreeShippingEligible: a.boolean(),
-      shippingCostPaise: a.integer(),
       images: a.json(),
       productCode: a.string(),
       createdAtIso: a.string().required(),
@@ -310,36 +295,14 @@ const schema = a.schema({
     ])
     .authorization((allow) => [allow.group('admin').to(['read'])]),
 
-  ShippingZone: a
+  // Single store-wide row; always create/update with id "default"
+  Shipping: a
     .model({
-      name: a.string().required(),
-      code: a.string().required(),
-      baseFeePaise: a.integer().required(),
-      freeShippingMinOrderPaise: a.integer(),
-      priority: a.integer().required(),
-      isActive: a.boolean().required(),
-      isFallback: a.boolean().required(),
-      createdAtIso: a.string().required(),
+      isFreeShipping: a.boolean().required(),
+      feePaise: a.integer().required(),
+      updatedAtIso: a.string().required(),
     })
-    .secondaryIndexes((index) => [index('code').queryField('listShippingZonesByCode')])
     .authorization((allow) => [
-      allow.publicApiKey().to(['read']),
-      allow.guest().to(['read']),
-      allow.authenticated().to(['read']),
-      allow.group('admin'),
-    ]),
-
-  ShippingPinPrefix: a
-    .model({
-      prefix: a.string().required(),
-      zoneId: a.id().required(),
-      zoneCode: a.string(),
-      createdAtIso: a.string().required(),
-    })
-    .identifier(['prefix'])
-    .authorization((allow) => [
-      allow.publicApiKey().to(['read']),
-      allow.guest().to(['read']),
       allow.authenticated().to(['read']),
       allow.group('admin'),
     ]),
@@ -396,16 +359,6 @@ const schema = a.schema({
     .returns(a.ref('PincodeValidation'))
     .authorization((allow) => [allow.authenticated()])
     .handler(a.handler.function(validatePincode)),
-
-  shippingQuote: a
-    .query()
-    .arguments({
-      zipCode: a.string().required(),
-      subtotalPaise: a.integer().required(),
-    })
-    .returns(a.ref('ShippingQuoteResult'))
-    .authorization((allow) => [allow.authenticated(), allow.group('admin')])
-    .handler(a.handler.function(shippingQuote)),
 
   calculateCheckoutTotals: a
     .mutation()

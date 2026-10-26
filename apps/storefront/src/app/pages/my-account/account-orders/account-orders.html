@@ -1,7 +1,7 @@
 <div class="orders-page">
   <header class="page-header">
-    <h1>Orders</h1>
-    <p class="page-description">Newest first. Open an order to see delivery and payment.</p>
+    <h1>My orders</h1>
+    <p class="page-description">Newest first. Select an order to see delivery and payment details.</p>
   </header>
 
   <div class="orders-toolbar">
@@ -39,41 +39,68 @@
       }
     </div>
   } @else {
+    <p class="orders-count">
+      {{ filteredOrders.length }} {{ filteredOrders.length === 1 ? 'order' : 'orders' }}
+    </p>
     <div class="orders-list">
       @for (order of filteredOrders; track order.id) {
-        <a class="order-row" [routerLink]="['/order', order.id]">
-          <div class="order-row__photos">
-            @for (item of previewItems(order); track item.id) {
-              <span class="order-row__photo">
-                @if (item.product_image) {
-                  <img [src]="item.product_image" [alt]="item.product_name" />
-                }
-              </span>
-            }
-            @if (extraItemCount(order) > 0) {
-              <span class="order-row__more">+{{ extraItemCount(order) }}</span>
-            }
-          </div>
+        <a
+          class="order-card"
+          [routerLink]="['/order', order.id]"
+          [attr.aria-label]="'View order ' + order.order_number"
+        >
+          <dl class="order-card__head">
+            <div class="order-card__field order-card__field--number">
+              <dt>Order number</dt>
+              <dd class="order-card__number">{{ order.order_number }}</dd>
+            </div>
+            <div class="order-card__field">
+              <dt>Placed on</dt>
+              <dd>{{ formatDate(order.created_at) }}</dd>
+            </div>
+            <div class="order-card__field order-card__field--total">
+              <dt>Total</dt>
+              <dd>{{ formatRupees(order.total) }}</dd>
+            </div>
+          </dl>
 
-          <div class="order-row__body">
-            <p class="order-row__number">{{ order.order_number }}</p>
-            <p class="order-row__meta">{{ formatDate(order.created_at) }} · {{ pieceLabel(order) }}</p>
-            <div class="order-row__status">
-              <span class="order-pill" [ngClass]="'order-pill--' + getStatusInfo(order.status).color">
-                {{ getStatusInfo(order.status).label }}
-              </span>
-              @if (order.payment_status) {
-                <span
-                  class="order-pill"
-                  [ngClass]="'order-pill--' + getPaymentStatusInfo(order.payment_status).color"
-                >
-                  {{ getPaymentStatusInfo(order.payment_status).label }}
+          <div class="order-card__body">
+            <div class="order-card__photos">
+              @for (item of previewItems(order); track item.id) {
+                <span class="order-card__photo">
+                  @if (item.product_image) {
+                    <img [src]="item.product_image" [alt]="item.product_name" />
+                  }
                 </span>
               }
+              @if (extraItemCount(order) > 0) {
+                <span class="order-card__more">+{{ extraItemCount(order) }}</span>
+              }
             </div>
-          </div>
 
-          <p class="order-row__total">{{ formatRupees(order.total) }}</p>
+            <div class="order-card__summary">
+              <p class="order-card__items">{{ itemSummary(order) }}</p>
+              <p class="order-card__meta">{{ pieceLabel(order) }}</p>
+              <div class="order-card__status">
+                <span class="order-pill" [ngClass]="'order-pill--' + getStatusInfo(order.status).color">
+                  {{ getStatusInfo(order.status).label }}
+                </span>
+                @if (order.payment_status) {
+                  <span
+                    class="order-pill"
+                    [ngClass]="'order-pill--' + getPaymentStatusInfo(order.payment_status).color"
+                  >
+                    {{ getPaymentStatusInfo(order.payment_status).label }}
+                  </span>
+                }
+              </div>
+            </div>
+
+            <span class="order-card__cta">
+              View details
+              <mat-icon aria-hidden="true">arrow_forward</mat-icon>
+            </span>
+          </div>
         </a>
       }
     </div>

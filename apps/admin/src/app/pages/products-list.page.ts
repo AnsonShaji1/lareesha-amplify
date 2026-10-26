@@ -52,7 +52,6 @@ import { formatDate, holdIsActive, listAll, parseImages, rupees } from '../admin
             <th>Reserved</th>
             <th>Available</th>
             <th>Tax</th>
-            <th>Shipping</th>
             <th>Created</th>
           </tr>
         </thead>
@@ -76,11 +75,10 @@ import { formatDate, holdIsActive, listAll, parseImages, rupees } from '../admin
                 {{ available(product) === 0 ? 'OUT OF STOCK' : available(product) }}
               </td>
               <td>{{ (product.taxPercentageBps || 0) / 100 }}%</td>
-              <td>{{ product.isFreeShippingEligible ? 'FREE' : rupees(product.shippingCostPaise) }}</td>
               <td>{{ formatDate(product.createdAtIso) }}</td>
             </tr>
           } @empty {
-            <tr><td colspan="13">No products match these filters.</td></tr>
+            <tr><td colspan="12">No products match these filters.</td></tr>
           }
         </tbody>
       </table>

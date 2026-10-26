@@ -37,13 +37,12 @@ def handler(event, context):
             }
         )
 
-    shipping_fee, zone = shipping.fee_for_address(address, subtotal)
+    shipping_fee, _zone = shipping.fee_for_address(address, subtotal)
     return {
         "subtotalPaise": subtotal,
         "shippingPaise": shipping_fee,
         "taxPaise": tax,
         "totalPaise": subtotal + shipping_fee + tax,
         "shippingPendingAddress": address is None,
-        "shippingZone": zone.get("name") if zone else None,
         "items": items,
     }

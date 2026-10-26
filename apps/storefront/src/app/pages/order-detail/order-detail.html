@@ -5,96 +5,126 @@
     </div>
   } @else if (order) {
     <header class="page-header">
-      <h1>Order</h1>
-      <p class="page-description">
-        <span class="order-number">{{ order.order_number }}</span>
-        <span>{{ formatDate(order.created_at) }}</span>
-      </p>
-    </header>
+      <a class="order-back" routerLink="/account/orders">
+        <mat-icon aria-hidden="true">arrow_back</mat-icon>
+        <span>Back to my orders</span>
+      </a>
+      <h1>Order details</h1>
 
-    <div class="order-layout">
-      <div class="order-main">
-        <div class="order-items">
-          @for (item of order.items; track item.id) {
-            <article class="order-item">
-              @if (item.product_url) {
-                <a class="order-item__media" [routerLink]="item.product_url">
-                  @if (item.product_image) {
-                    <img [src]="item.product_image" [alt]="item.product_name" />
-                  }
-                </a>
-              } @else {
-                <div class="order-item__media">
-                  @if (item.product_image) {
-                    <img [src]="item.product_image" [alt]="item.product_name" />
-                  }
-                </div>
-              }
-
-              <div class="order-item__info">
-                <h2>
-                  @if (item.product_url) {
-                    <a [routerLink]="item.product_url">{{ item.product_name }}</a>
-                  } @else {
-                    {{ item.product_name }}
-                  }
-                </h2>
-                <p class="order-item__meta">Qty {{ item.quantity }}</p>
-                <p class="order-item__price">
-                  <span>{{ formatRupees(item.line_total) }}</span>
-                  @if (item.quantity > 1) {
-                    <span class="order-item__each">{{ formatRupees(item.product_price) }} each</span>
-                  }
-                </p>
-              </div>
-            </article>
-          }
+      <dl class="order-meta">
+        <div class="order-meta__item">
+          <dt>Order number</dt>
+          <dd class="order-meta__number">
+            <span>{{ order.order_number }}</span>
+            <button
+              type="button"
+              class="order-copy"
+              (click)="copyOrderNumber(order.order_number)"
+              aria-label="Copy order number"
+            >
+              Copy
+            </button>
+          </dd>
         </div>
-
-        <section class="order-address">
-          <h2>Shipping address</h2>
-          <p class="order-address__name">{{ order.first_name }} {{ order.last_name }}</p>
-          @if (order.address) {
-            <p>{{ order.address }}</p>
-          }
-          @if (order.apartment) {
-            <p>{{ order.apartment }}</p>
-          }
-          <p>
-            {{ order.city }}@if (order.state) {, {{ order.state }} }
-            {{ order.zip_code }}
-          </p>
-          @if (order.country) {
-            <p>{{ order.country }}</p>
-          }
-          @if (order.phone) {
-            <p>{{ order.phone }}</p>
-          }
-        </section>
-      </div>
-
-      <aside class="order-summary">
-        <div class="order-status">
-          <div class="order-status__row">
-            <span>Package</span>
+        <div class="order-meta__item">
+          <dt>Placed on</dt>
+          <dd>{{ formatDate(order.created_at) }}</dd>
+        </div>
+        <div class="order-meta__item">
+          <dt>Order status</dt>
+          <dd>
             <span class="order-pill" [ngClass]="'order-pill--' + getStatusInfo(order.status).color">
               {{ getStatusInfo(order.status).label }}
             </span>
-          </div>
-          @if (order.payment_status) {
-            <div class="order-status__row">
-              <span>Payment</span>
+          </dd>
+        </div>
+        @if (order.payment_status) {
+          <div class="order-meta__item">
+            <dt>Payment</dt>
+            <dd>
               <span
                 class="order-pill"
                 [ngClass]="'order-pill--' + getPaymentStatusInfo(order.payment_status).color"
               >
                 {{ getPaymentStatusInfo(order.payment_status).label }}
               </span>
-            </div>
-          }
-        </div>
-        <p class="order-summary__note">{{ getOrderMessage(order) }}</p>
+            </dd>
+          </div>
+        }
+      </dl>
+      <p class="order-summary__note">{{ getOrderMessage(order) }}</p>
+    </header>
 
+    <div class="order-layout">
+      <div class="order-main">
+        <section class="order-card" aria-labelledby="order-items-title">
+          <h2 id="order-items-title" class="order-card__title">
+            Items in this order ({{ order.items.length }})
+          </h2>
+          <div class="order-items">
+            @for (item of order.items; track item.id) {
+              <article class="order-item">
+                @if (item.product_url) {
+                  <a class="order-item__media" [routerLink]="item.product_url">
+                    @if (item.product_image) {
+                      <img [src]="item.product_image" [alt]="item.product_name" />
+                    }
+                  </a>
+                } @else {
+                  <div class="order-item__media">
+                    @if (item.product_image) {
+                      <img [src]="item.product_image" [alt]="item.product_name" />
+                    }
+                  </div>
+                }
+
+                <div class="order-item__info">
+                  <h3>
+                    @if (item.product_url) {
+                      <a [routerLink]="item.product_url">{{ item.product_name }}</a>
+                    } @else {
+                      {{ item.product_name }}
+                    }
+                  </h3>
+                  <p class="order-item__meta">
+                    Quantity: {{ item.quantity }}
+                    @if (item.quantity > 1) {
+                      · {{ formatRupees(item.product_price) }} each
+                    }
+                  </p>
+                </div>
+                <p class="order-item__price">{{ formatRupees(item.line_total) }}</p>
+              </article>
+            }
+          </div>
+        </section>
+
+        <section class="order-card" aria-labelledby="order-address-title">
+          <h2 id="order-address-title" class="order-card__title">Shipping address</h2>
+          <address class="order-address">
+            <p class="order-address__name">{{ order.first_name }} {{ order.last_name }}</p>
+            @if (order.address) {
+              <p>{{ order.address }}</p>
+            }
+            @if (order.apartment) {
+              <p>{{ order.apartment }}</p>
+            }
+            <p>
+              {{ order.city }}@if (order.state) {, {{ order.state }} }
+              {{ order.zip_code }}
+            </p>
+            @if (order.country) {
+              <p>{{ order.country }}</p>
+            }
+            @if (order.phone) {
+              <p>Phone: {{ order.phone }}</p>
+            }
+          </address>
+        </section>
+      </div>
+
+      <aside class="order-summary order-card" aria-labelledby="order-summary-title">
+        <h2 id="order-summary-title" class="order-card__title">Order summary</h2>
         <div class="order-totals">
           <div class="order-totals__row">
             <span>Subtotal</span>

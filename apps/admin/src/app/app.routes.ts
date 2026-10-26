@@ -24,8 +24,6 @@ import { PaymentDetailPage } from './pages/payment-detail.page';
 import { ReservationsPage } from './pages/reservations.page';
 import { ReservationDetailPage } from './pages/reservation-detail.page';
 import { ShippingPage } from './pages/shipping.page';
-import { ShippingFormPage } from './pages/shipping-form.page';
-import { ShippingDeletePage } from './pages/shipping-delete.page';
 import { SeedPage } from './pages/seed.page';
 
 export const routes: Routes = [
@@ -56,9 +54,6 @@ export const routes: Routes = [
   { path: 'payments', component: PaymentsPage, canActivate: [adminGuard] },
   { path: 'reservations/:id', component: ReservationDetailPage, canActivate: [adminGuard] },
   { path: 'reservations', component: ReservationsPage, canActivate: [adminGuard] },
-  { path: 'shipping/new', component: ShippingFormPage, canActivate: [adminGuard] },
-  { path: 'shipping/delete', component: ShippingDeletePage, canActivate: [adminGuard] },
-  { path: 'shipping/:id', component: ShippingFormPage, canActivate: [adminGuard] },
   { path: 'shipping', component: ShippingPage, canActivate: [adminGuard] },
   { path: 'seed', component: SeedPage, canActivate: [adminGuard], data: { imageSource: 'test' } },
   { path: 'seed-live', component: SeedPage, canActivate: [adminGuard], data: { imageSource: 'live' } },
