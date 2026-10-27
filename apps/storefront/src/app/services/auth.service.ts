@@ -70,6 +70,7 @@ export interface AuthResponse {
 }
 
 const WELCOME_TOAST_KEY = 'll_auth_welcome';
+const GOOGLE_LINK_RETRY_KEY = 'll_google_link_retry';
 let welcomeToastQueued = false;
 
 @Injectable({
@@ -89,9 +90,27 @@ export class AuthService {
         void this.refreshUser();
       }
       if (payload.event === 'signInWithRedirect_failure') {
+        const message =
+          (payload as { data?: { error?: { message?: string } } }).data?.error?.message || '';
+        // PreSignUp AdminLinkProviderForUser often surfaces this once; a second Google sign-in succeeds.
+        if (/already found an entry for username/i.test(message) && !this.consumeGoogleLinkRetry()) {
+          this.markGoogleLinkRetry();
+          this.notifications.info(
+            'Google was linked to your account. Continuing sign-in…',
+          );
+          void this.startGoogleSignIn().catch(() => {
+            this.clearWelcomeToastFlag();
+            this.clearGoogleLinkRetry();
+          });
+          return;
+        }
         this.clearWelcomeToastFlag();
-        const message = (payload as { data?: { error?: { message?: string } } }).data?.error?.message;
-        this.notifications.error(message || 'Google sign-in failed');
+        this.clearGoogleLinkRetry();
+        this.notifications.error(
+          /already found an entry for username/i.test(message)
+            ? 'Google was linked to your account. Please click Continue with Google once more.'
+            : message || 'Google sign-in failed',
+        );
       }
       if (payload.event === 'signedOut') {
         this.clearWelcomeToastFlag();
@@ -153,6 +172,33 @@ export class AuthService {
   private clearWelcomeToastFlag(): void {
     try {
       sessionStorage.removeItem(WELCOME_TOAST_KEY);
+    } catch {
+      /* ignore */
+    }
+  }
+
+  private markGoogleLinkRetry(): void {
+    try {
+      sessionStorage.setItem(GOOGLE_LINK_RETRY_KEY, '1');
+    } catch {
+      /* ignore */
+    }
+  }
+
+  /** Returns true if a link-retry was already attempted (and clears the flag). */
+  private consumeGoogleLinkRetry(): boolean {
+    try {
+      const pending = sessionStorage.getItem(GOOGLE_LINK_RETRY_KEY) === '1';
+      if (pending) sessionStorage.removeItem(GOOGLE_LINK_RETRY_KEY);
+      return pending;
+    } catch {
+      return false;
+    }
+  }
+
+  private clearGoogleLinkRetry(): void {
+    try {
+      sessionStorage.removeItem(GOOGLE_LINK_RETRY_KEY);
     } catch {
       /* ignore */
     }

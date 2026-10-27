@@ -9,6 +9,7 @@ import { readdirSync, readFileSync, statSync } from 'node:fs';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { auth } from './auth/resource';
+import { preSignUp } from './auth/pre-sign-up/resource';
 import { data } from './data/resource';
 import { createOrder } from './functions/create-order/resource';
 import { verifyPayment } from './functions/verify-payment/resource';
@@ -29,6 +30,8 @@ import { listUsers } from './functions/list-users/resource';
 
 const backend = defineBackend({
   auth,
+  // Import so we can attach Cognito AdminLinkProviderForUser (not in Amplify access map yet).
+  preSignUp,
   data,
   createOrder,
   verifyPayment,
@@ -53,6 +56,18 @@ cfnUserPool.addPropertyDeletionOverride('Schema');
 cfnUserPool.emailConfiguration = {
   emailSendingAccount: 'COGNITO_DEFAULT',
 };
+
+// Wildcard ARN avoids UserPool ↔ PreSignUp Lambda circular dependency in the auth stack.
+backend.preSignUp.resources.lambda.addToRolePolicy(
+  new iam.PolicyStatement({
+    actions: [
+      'cognito-idp:ListUsers',
+      'cognito-idp:AdminLinkProviderForUser',
+      'cognito-idp:AdminGetUser',
+    ],
+    resources: ['*'],
+  }),
+);
 
 const amplifyDir = path.dirname(fileURLToPath(import.meta.url));
 const dataStack = Stack.of(backend.createOrder.resources.lambda);

@@ -1,0 +1,11 @@
+{
+  "name": "pre-sign-up",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@aws-sdk/client-cognito-identity-provider": "^3.787.0"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.149"
+  }
+}

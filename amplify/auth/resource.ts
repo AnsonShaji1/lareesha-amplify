@@ -1,4 +1,5 @@
 import { defineAuth, secret } from '@aws-amplify/backend';
+import { preSignUp } from './pre-sign-up/resource';
 
 export const auth = defineAuth({
   loginWith: {
@@ -50,4 +51,9 @@ export const auth = defineAuth({
     phoneNumber: { mutable: true },
     gender: { mutable: true },
   },
+  triggers: {
+    preSignUp,
+  },
+  // Cognito IAM for this trigger is granted in backend.ts with a wildcard ARN
+  // so we do not create a circular dependency (UserPool ↔ Lambda policy).
 });
